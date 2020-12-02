@@ -19,6 +19,7 @@ public class DeleteCommand extends DRECommand {
     public DeleteCommand() {
         setCommand("delete");
         setAliases("del", "remove");
+        setMinArgs(1);
         setMaxArgs(1);
         setHelp("No help?");
         setPlayerCommand(true);

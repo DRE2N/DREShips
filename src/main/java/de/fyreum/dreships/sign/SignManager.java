@@ -19,7 +19,6 @@ import java.util.concurrent.ExecutionException;
 
 public class SignManager {
 
-
     private final Map<UUID, List<CacheSign>> playerCache;
     private final PriceCalculation priceCalculation;
 
@@ -76,6 +75,10 @@ public class SignManager {
     }
 
     private void loadAndCreate(Sign sign, Sign destination, String name, String destinationName, int price) {
+        savePersistentData(sign, destination.getLocation(), name, destinationName, price);
+        visualizeData(sign, name, destinationName, price);
+        MessageUtil.broadcastMessage(ShipMessage.CMD_CREATE_SUCCESS.getMessage(simplify(sign.getLocation())));
+        /*
         BukkitRunnable runnable = new BukkitRunnable() {
             final CompletableFuture<Chunk> completableFuture = sign.getWorld().getChunkAtAsync(sign.getLocation());
             @Override
@@ -84,7 +87,7 @@ public class SignManager {
                     try {
                         savePersistentData(sign, destination.getLocation(), name, destinationName, price);
                         visualizeData(sign, name, destinationName, price);
-                         MessageUtil.broadcastMessage(ShipMessage.CMD_CREATE_SUCCESS.getMessage(simplify(sign.getLocation()),
+                        MessageUtil.broadcastMessage(ShipMessage.CMD_CREATE_SUCCESS.getMessage(simplify(sign.getLocation()),
                                  String.valueOf(completableFuture.get() == null)));
                     } catch (InterruptedException | ExecutionException e) {
                         e.printStackTrace();
@@ -95,6 +98,7 @@ public class SignManager {
             }
         };
         runnable.runTaskTimerAsynchronously(DREShips.getInstance(), 20,20);
+        */
     }
 
     private void savePersistentData(Sign sign, Location destination, String name, String destName, int price) {
@@ -127,6 +131,11 @@ public class SignManager {
         if (sign == null) {
             return 0;
         }
+        deletePersistentData(sign);
+        clearLines(sign);
+        MessageUtil.broadcastMessage(ShipMessage.CMD_DELETE_SUCCESS.getMessage(simplify(sign.getLocation())));
+        return 1;
+        /*
         BukkitRunnable runnable = new BukkitRunnable() {
             final CompletableFuture<Chunk> completableFuture = sign.getWorld().getChunkAtAsync(sign.getLocation());
             @Override
@@ -147,6 +156,7 @@ public class SignManager {
         };
         runnable.runTaskTimerAsynchronously(DREShips.getInstance(), 20,20);
         return 1;
+        */
     }
 
     private void deletePersistentData(@Nullable Sign sign) {

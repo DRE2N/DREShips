@@ -18,6 +18,7 @@ public class CreateCommand extends DRECommand {
     public CreateCommand() {
         setCommand("create");
         setAliases("c", "cr");
+        setMinArgs(1);
         setMaxArgs(1);
         setHelp("No help?");
         setPlayerCommand(true);

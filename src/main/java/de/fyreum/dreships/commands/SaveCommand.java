@@ -21,6 +21,7 @@ public class SaveCommand extends DRECommand {
     public SaveCommand() {
         setCommand("save");
         setAliases("s", "sv");
+        setMinArgs(1);
         setMaxArgs(1);
         setHelp("No help?");
         setPlayerCommand(true);

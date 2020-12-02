@@ -3,10 +3,12 @@ package de.fyreum.dreships.config;
 import de.erethon.commons.config.Message;
 import de.erethon.commons.config.MessageHandler;
 import de.fyreum.dreships.DREShips;
+import org.bukkit.entity.Player;
 
 public enum ShipMessage implements Message {
 
     DS("name"),
+    PREFIX("prefix"),
     WARN_SUFFOCATION("warn.suffocation"),
     WARN_VAULT("warn.vault"),
     CMD_CACHE_EMPTY("cmd.cacheEmpty"),
@@ -31,7 +33,7 @@ public enum ShipMessage implements Message {
     SIGN_LINE_THREE("sign.lineThree"),
     SIGN_LINE_FOUR("sign.lineFour");
 
-    private String path;
+    private final String path;
 
     ShipMessage(String path) {
         this.path = path;
@@ -50,6 +52,17 @@ public enum ShipMessage implements Message {
             return "Invalid Message at " + getPath();
         }
         return this.getMessageHandler().getMessage(this, args);
+    }
+
+    public void sendMessage(Player player, boolean prefix, String... args) {
+        if (this.getMessageHandler().getMessage(this, args) == null) {
+            player.sendMessage("Invalid Message at " + getPath());
+        }
+        if (prefix) {
+            player.sendMessage(PREFIX.getMessage() + this.getMessage(args));
+        } else {
+            player.sendMessage(this.getMessage(args));
+        }
     }
 
     @Override

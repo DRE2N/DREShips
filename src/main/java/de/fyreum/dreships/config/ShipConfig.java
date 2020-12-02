@@ -8,9 +8,9 @@ public class ShipConfig extends DREConfig  {
 
     public static final int CONFIG_VERSION = 1;
 
-    private double airshipDistanceMultiplier = 1.00;
-    private double landDistanceMultiplier = 1.00;
-    private double shipDistanceMultiplier = 1.00;
+    private double airshipDistanceMultiplier = 0.10;
+    private double landDistanceMultiplier = 0.10;
+    private double shipDistanceMultiplier = 0.10;
     private double startPrice = 10.00;
 
     public ShipConfig(File file) {
