@@ -69,6 +69,7 @@ public final class DREShips extends DREPlugin {
         getCommand("dreships").setTabCompleter(commandCache);
         getServer().getPluginManager().registerEvents(new SignListener(), getInstance());
         this.attemptToSaveResource("languages/german.yml", false);
+        this.getMessageHandler().setDefaultLanguage("german");
     }
 
     /* getter */

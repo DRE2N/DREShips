@@ -19,8 +19,8 @@ public class DeleteCommand extends DRECommand {
     public DeleteCommand() {
         setCommand("delete");
         setAliases("del", "remove");
-        setMinArgs(1);
-        setMaxArgs(1);
+        setMinArgs(0);
+        setMaxArgs(0);
         setHelp("No help?");
         setPlayerCommand(true);
         setConsoleCommand(false);
@@ -35,7 +35,8 @@ public class DeleteCommand extends DRECommand {
             MessageUtil.sendMessage(player, ShipMessage.ERROR_TARGET_NO_SIGN.getMessage());
             return;
         }
-        MessageUtil.sendMessage(player, ShipMessage.CMD_DELETE_SUCCESS.getMessage());
-        signManager.delete((Sign) target.getState());
+        if (signManager.delete(commandSender, (Sign) target.getState()) == 0) {
+            ShipMessage.CMD_DELETE_SUCCESS.sendMessage(commandSender, "0");
+        }
     }
 }

@@ -14,6 +14,7 @@ import org.bukkit.block.Block;
 import org.bukkit.block.data.type.Sign;
 import org.bukkit.block.data.type.WallSign;
 import org.bukkit.entity.Player;
+import org.jetbrains.annotations.NotNull;
 
 import java.util.*;
 
@@ -31,8 +32,8 @@ public class TeleportationUtil {
         this.repeats = new HashMap<>();
     }
 
-    public void teleport(Player player, TravelSign travelSign) {
-        if (!economy.has(player, travelSign.getPrice())) {
+    public void teleport(@NotNull Player player, @NotNull TravelSign travelSign) {
+        if (economy != null && !economy.has(player, travelSign.getPrice())) {
             MessageUtil.sendMessage(player, ShipMessage.ERROR_NO_MONEY.getMessage());
             return;
         }
@@ -45,12 +46,14 @@ public class TeleportationUtil {
             return;
         }
         currentlyTeleporting.add(player.getUniqueId());
-        economy.withdrawPlayer(player, travelSign.getPrice());
+        if (economy != null) {
+            economy.withdrawPlayer(player, travelSign.getPrice());
+        }
         teleportAfterCheck(player, travelSign.getDestination());
         MessageUtil.sendMessage(player, ShipMessage.TP_SUCCESS.getMessage(travelSign.getName(), travelSign.getDestinationName(), String.valueOf(travelSign.getPrice())));
     }
 
-    private void teleportAfterCheck(Player player, Location location) {
+    private void teleportAfterCheck(@NotNull Player player, @NotNull Location location) {
         if (player.hasPermission("dreships.cmd.teleport")) {
             teleport(player, location, player.getWalkSpeed());
             return;
@@ -72,7 +75,7 @@ public class TeleportationUtil {
             }, 0, 20));
     }
 
-    private void teleport(Player player, Location location, float oldSpeed) {
+    private void teleport(@NotNull Player player, @NotNull Location location, float oldSpeed) {
         Block block = location.getBlock();
         if (block.getBlockData() instanceof WallSign) {
             WallSign signData = (WallSign) block.getState().getBlockData();
@@ -95,14 +98,14 @@ public class TeleportationUtil {
         return stringBuilder.toString();
     }
 
-    private TextComponent teleportMessage(Location loc) {
+    private TextComponent teleportMessage(@NotNull Location loc) {
         TextComponent component = new TextComponent();
         component.setText(ShipMessage.CMD_TP_SUGGESTION.getMessage());
         component.setClickEvent(new ClickEvent(ClickEvent.Action.RUN_COMMAND, commandString(loc)));
         return component;
     }
 
-    private String commandString(Location loc) {
+    private String commandString(@NotNull Location loc) {
         return "/ds teleport " + loc.getWorld().getName() + " " +  loc.getX() + " " +  loc.getY() + " " +  loc.getZ();
     }
 

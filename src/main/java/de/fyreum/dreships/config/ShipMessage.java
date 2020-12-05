@@ -1,9 +1,18 @@
 package de.fyreum.dreships.config;
 
+import de.erethon.commons.chat.MessageUtil;
 import de.erethon.commons.config.Message;
 import de.erethon.commons.config.MessageHandler;
 import de.fyreum.dreships.DREShips;
+import net.md_5.bungee.api.ChatColor;
+import org.bukkit.Bukkit;
+import org.bukkit.command.CommandSender;
 import org.bukkit.entity.Player;
+
+import java.util.regex.Matcher;
+import java.util.regex.Pattern;
+
+import static net.md_5.bungee.api.ChatColor.translateAlternateColorCodes;
 
 public enum ShipMessage implements Message {
 
@@ -19,6 +28,7 @@ public enum ShipMessage implements Message {
     CMD_INFO_TRAVEL_SIGN("cmd.info.travelSign"),
     CMD_INFO_NO_SIGN("cmd.info.noSign"),
     CMD_SAVE_ALREADY_SIGN("cmd.save.alreadySign"),
+    CMD_SAVE_ALREADY_CACHED("cmd.save.alreadyCached"),
     CMD_SAVE_SUCCESS("cmd.save.success"),
     CMD_TP_SUGGESTION("cmd.tp.suggestion"),
     ERROR_PRICE_INVALID("error.price.invalid"),
@@ -54,15 +64,8 @@ public enum ShipMessage implements Message {
         return this.getMessageHandler().getMessage(this, args);
     }
 
-    public void sendMessage(Player player, boolean prefix, String... args) {
-        if (this.getMessageHandler().getMessage(this, args) == null) {
-            player.sendMessage("Invalid Message at " + getPath());
-        }
-        if (prefix) {
-            player.sendMessage(PREFIX.getMessage() + this.getMessage(args));
-        } else {
-            player.sendMessage(this.getMessage(args));
-        }
+    public void sendMessage(CommandSender sender, String... args) {
+        MessageUtil.sendMessage(sender, this.getMessage(args));
     }
 
     @Override

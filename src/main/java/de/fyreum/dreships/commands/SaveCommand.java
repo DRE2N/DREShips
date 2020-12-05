@@ -52,6 +52,10 @@ public class SaveCommand extends DRECommand {
             MessageUtil.sendMessage(player, ShipMessage.ERROR_TARGET_NO_SIGN.getMessage());
             return;
         }
+        if (signManager.alreadyCached(player.getUniqueId(), sign)) {
+            MessageUtil.sendMessage(player, ShipMessage.CMD_SAVE_ALREADY_CACHED.getMessage());
+            return;
+        }
         signManager.saveSignInCache(player.getUniqueId(), sign, args[1]);
         MessageUtil.sendMessage(player, ShipMessage.CMD_SAVE_SUCCESS.getMessage());
     }

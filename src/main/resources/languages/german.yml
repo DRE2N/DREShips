@@ -1,21 +1,22 @@
 name: "ds"
 prefix: "&8[&5DREShips&8] &r"
 warn:
-  suffocation: "Keine luft"
+  suffocation: "&cZiel ist möglicherweise zugebaut."
   vault: "Vault fehlt"
 cmd:
   cacheEmpty: "Cache ist leer"
   create:
-    start: "Erstelulng startet"
-    success: "Erstelulng erfolgreich"
+    start: "Erstellung startet"
+    success: "Erstellung erfolgreich"
   delete:
-    success: "Löschung erfolgreich"
+    success: "&aEs wurden &2{} &aSchilder &2gelöscht"
   help: "Hilfeee"
   info:
     travelSign: "Kein TravelSign"
     noSign: "Kein Schild"
   save:
     alreadySign: "Schon benutztes Schild"
+    alreadyCached: "Schon zwischengespeichertes Schild"
     success: "Speicherung erfolgreich"
   tp:
     suggestion: "Teleportation?"
@@ -32,7 +33,7 @@ error:
   missingArguments: "Mehr Infos. Kek"
   money: "Kein Geld"
 sign:
-  lineOne: "&8[5Verbindung&8]"
-  lineTwo: "&7Von&8: &b{0}"
-  lineThree: "&7nach&8: &b{0}"
-  lineFour: "&7Für&8: &b{0}"
+  lineOne: '&8[&1Verbindung&8]'
+  lineTwo: '&bVon&8: &7{}'
+  lineThree: '&bnach&8: &7{}'
+  lineFour: '&9Für&8: &7{} H'
