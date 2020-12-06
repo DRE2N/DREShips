@@ -44,15 +44,4 @@ public class Serialization {
         return stringList.toArray(new String[0]);
     }
 
-    /* test */
-
-    public static void main(String[] args) {
-        String[] input = {"Test string", "and one more"};
-        byte[] byteArray = serialize(input);
-        String[] output = deserialize(byteArray);
-        for (String string : output) {
-            System.out.println(string);
-        }
-    }
-
 }

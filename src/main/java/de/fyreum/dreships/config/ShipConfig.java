@@ -8,10 +8,12 @@ public class ShipConfig extends DREConfig  {
 
     public static final int CONFIG_VERSION = 1;
 
+    private String language = "german";
     private double airshipDistanceMultiplier = 0.10;
     private double landDistanceMultiplier = 0.10;
     private double shipDistanceMultiplier = 0.10;
     private double startPrice = 10.00;
+    private double taxMultiplier = 0.05;
 
     public ShipConfig(File file) {
         super(file, CONFIG_VERSION);
@@ -19,6 +21,10 @@ public class ShipConfig extends DREConfig  {
             initialize();
         }
         load();
+    }
+
+    public String getLanguage() {
+        return language;
     }
 
     public double getAirshipDistanceMultiplier() {
@@ -37,8 +43,15 @@ public class ShipConfig extends DREConfig  {
         return startPrice;
     }
 
+    public double getTaxMultiplier() {
+        return taxMultiplier;
+    }
+
     @Override
     public void initialize() {
+        if (!config.contains("language")) {
+            config.set("language", language);
+        }
         if (!config.contains("multiplier.airship")) {
             config.set("multiplier.airship", airshipDistanceMultiplier);
         }
@@ -51,23 +64,30 @@ public class ShipConfig extends DREConfig  {
         if (!config.contains("startPrice")) {
             config.set("startPrice", startPrice);
         }
+        if (!config.contains("taxMultiplier")) {
+            config.set("taxMultiplier", taxMultiplier);
+        }
         save();
     }
 
     @Override
     public void save() {
+        config.set("language", language);
         config.set("multiplier.airship", airshipDistanceMultiplier);
         config.set("multiplier.land", landDistanceMultiplier);
         config.set("multiplier.ship", shipDistanceMultiplier);
         config.set("startPrice", startPrice);
+        config.set("taxMultiplier", taxMultiplier);
         super.save();
     }
 
     @Override
     public void load() {
+        language = config.getString("language");
         airshipDistanceMultiplier = config.getDouble("multiplier.airship");
         landDistanceMultiplier = config.getDouble("multiplier.land");
         shipDistanceMultiplier = config.getDouble("multiplier.ship");
         startPrice = config.getDouble("startPrice");
+        taxMultiplier = config.getDouble("taxMultiplier");
     }
 }

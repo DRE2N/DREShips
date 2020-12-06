@@ -81,6 +81,12 @@
       <scope>provided</scope>
     </dependency>
     <dependency>
+      <groupId>de.erethon</groupId>
+      <artifactId>factionsxl</artifactId>
+      <version>0.11</version>
+      <scope>compile</scope>
+    </dependency>
+    <dependency>
       <groupId>com.github.MilkBowl</groupId>
       <artifactId>VaultAPI</artifactId>
       <version>1.7</version>

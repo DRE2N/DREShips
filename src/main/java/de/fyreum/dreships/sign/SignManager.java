@@ -40,8 +40,8 @@ public class SignManager {
 
     // ----------TravelSign---------
 
-    public int createFromCache(@NotNull UUID uuid, int price) throws CacheSignException {
-        if (playerCache.get(uuid).size() != 2) {
+    public int createFromCache(@NotNull CommandSender sender, @NotNull UUID uuid, int price) throws CacheSignException {
+        if (playerCache.get(uuid) == null || playerCache.get(uuid).size() != 2) {
             throw new CacheSignException("Couldn't create a TravelSign. Player cache is empty.");
         }
         Sign sign = playerCache.get(uuid).get(0).getSign();
@@ -49,34 +49,39 @@ public class SignManager {
         String name = playerCache.get(uuid).get(0).getName();
         String destinationName = playerCache.get(uuid).get(1).getName();
 
-        this.create(sign, destination, name, destinationName, price);
+        this.create(sender, sign, destination, name, destinationName, price);
+        playerCache.get(uuid).clear();
         return price;
     }
 
-    public int calculateAndCreateFromCache(@NotNull UUID uuid, double multipliedDistance) throws CacheSignException {
-        if (playerCache.get(uuid).size() != 2) {
+    public int calculateAndCreateFromCache(@NotNull CommandSender sender, @NotNull UUID uuid, double multipliedDistance) throws CacheSignException {
+        if (playerCache.get(uuid) == null || playerCache.get(uuid).size() != 2) {
             throw new CacheSignException("Couldn't create a TravelSign. Player cache is empty.");
         }
-        Sign sign = playerCache.get(uuid).get(0).getSign();
-        Sign destination = playerCache.get(uuid).get(1).getSign();
-        String name = playerCache.get(uuid).get(0).getName();
-        String destinationName = playerCache.get(uuid).get(1).getName();
+        CacheSign cachedSign = playerCache.get(uuid).get(0);
+        CacheSign cachedDestination = playerCache.get(uuid).get(1);
+
+        Sign sign = cachedSign.getSign();
+        Sign destination = cachedDestination.getSign();
+        String name = cachedSign.getName();
+        String destinationName = cachedDestination.getName();
 
         int price = this.priceCalculation.calculate(sign.getLocation(), destination.getLocation(), multipliedDistance);
-        this.create(sign, destination, name, destinationName, price);
+        this.create(sender, sign, destination, name, destinationName, price);
+        playerCache.get(uuid).clear();
         return price;
     }
 
-    public void create(@NotNull Sign sign, @NotNull Sign destination, String name, String destinationName, int price) {
-        this.loadAndCreate(sign, destination, name, destinationName, price);
-        this.loadAndCreate(destination, sign, name, destinationName, price);
+    public void create(@NotNull CommandSender sender, @NotNull Sign sign, @NotNull Sign destination, String name, String destinationName, int price) {
+        this.loadAndCreate(sender, sign, destination, name, destinationName, price);
+        this.loadAndCreate(sender, destination, sign, destinationName, name, price);
     }
 
-    private void loadAndCreate(@NotNull Sign sign, @NotNull Sign destination, String name, String destinationName, int price) {
+    private void loadAndCreate(@NotNull CommandSender sender, @NotNull Sign sign, @NotNull Sign destination, String name, String destinationName, int price) {
         this.savePersistentData(sign, destination.getLocation(), name, destinationName, price);
         this.visualizeData(sign, name, destinationName, price);
-        MessageUtil.broadcastMessage(ShipMessage.CMD_CREATE_SUCCESS.getMessage(simplify(sign.getLocation())));
-        /*
+        MessageUtil.sendMessage(sender, ShipMessage.CMD_CREATE_SUCCESS.getMessage(simplify(sign.getLocation())));
+        /*  // failed performance friendly concept (Sign changes won't save)
         BukkitRunnable runnable = new BukkitRunnable() {
             final CompletableFuture<Chunk> completableFuture = sign.getWorld().getChunkAtAsync(sign.getLocation());
             @Override
@@ -110,8 +115,8 @@ public class SignManager {
     private void visualizeData(Sign sign, String name, String destName, int price) {
         sign.setLine(0, ShipMessage.SIGN_LINE_ONE.getMessage());
         sign.setLine(1, ShipMessage.SIGN_LINE_TWO.getMessage(name));
-        sign.setLine(2, ShipMessage.SIGN_LINE_THREE.getMessage(destName));
-        sign.setLine(3, ShipMessage.SIGN_LINE_FOUR.getMessage(String.valueOf(price)));
+        sign.setLine(2, ShipMessage.SIGN_LINE_THREE.getMessage(String.valueOf(price)));
+        sign.setLine(3, ShipMessage.SIGN_LINE_FOUR.getMessage(destName));
         sign.update(true);
     }
 
@@ -133,7 +138,7 @@ public class SignManager {
         this.clearLines(sign);
         MessageUtil.sendMessage(sender, ShipMessage.CMD_DELETE_SUCCESS.getMessage(simplify(sign.getLocation())));
         return 1;
-        /*
+        /* // failed performance friendly concept (Sign changes won't save)
         BukkitRunnable runnable = new BukkitRunnable() {
             final CompletableFuture<Chunk> completableFuture = sign.getWorld().getChunkAtAsync(sign.getLocation());
             @Override
@@ -181,7 +186,7 @@ public class SignManager {
 
     /* getter */
 
-    private String simplify(Location location) {
+    public static String simplify(Location location) {
         return "[x=" + location.getX() + ", y=" + location.getY() + ", z=" + location.getZ();
     }
 

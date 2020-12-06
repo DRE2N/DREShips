@@ -21,7 +21,7 @@ public class DeleteCommand extends DRECommand {
         setAliases("del", "remove");
         setMinArgs(0);
         setMaxArgs(0);
-        setHelp("No help?");
+        setHelp("/ds delete");
         setPlayerCommand(true);
         setConsoleCommand(false);
         setPermission("dreships.cmd.delete");

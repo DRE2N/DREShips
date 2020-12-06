@@ -1,39 +1,41 @@
-name: "ds"
 prefix: "&8[&5DREShips&8] &r"
 warn:
-  suffocation: "&cZiel ist möglicherweise zugebaut."
-  vault: "Vault fehlt"
+  suffocation: "&c&lErstickungsgefahr&r&8: &cZiel ist möglicherweise zugebaut."
 cmd:
-  cacheEmpty: "Cache ist leer"
+  cacheEmpty: "&cDu hast nicht genug Schilder zwischengespeichert"
   create:
-    start: "Erstellung startet"
-    success: "Erstellung erfolgreich"
+    success: "&aErstellung erfolgreich abgeschlossen"
   delete:
-    success: "&aEs wurden &2{} &aSchilder &2gelöscht"
-  help: "Hilfeee"
+    success: "&aDas Schild bei &2&v1 &awurde gelöscht"
+    failed: "&7Es wurden keine Schilder gelöscht"
+  help: "&6Siehe die bei /ds help beschriebenen Befehle"
   info:
-    travelSign: "Kein TravelSign"
-    noSign: "Kein Schild"
+    travelSign: "&8---[&1Verbindung&8]---\n &bvon&8: &7&v1\n &bnach&8: &7&v2 (&v3)\n &bfür&8: &7&v4 Heronen"
+    noSign: "&cEs können nur Schilder Verbindungen beinhalten"
+    noTravelSign: "&7Keine Verbindung gefunden"
   save:
-    alreadySign: "Schon benutztes Schild"
-    alreadyCached: "Schon zwischengespeichertes Schild"
-    success: "Speicherung erfolgreich"
+    alreadySign: "&cDieses Schild hat bereits eine Verbindung"
+    alreadyCached: "&7Dieses Schild ist schon zwischengespeichert"
+    success: "&aSicherung erfolgreich"
   tp:
-    suggestion: "Teleportation?"
+    suggestion: "&6&oIch bin mir dessen bewusst."
+    hoverText: "&7Teleportieren?"
 tp:
-  success: "Teleportation erfolgreich"
+  success: "&7Du bist von &b&v1 &7nach &b&v2 &7für &9&v3 &7gereist"
+  taxMessage: "&aEs wurden &6&v2 &aGebühren auf das Konto von [&v3] überwiesen."
+  moveCancel: "&4Du darfst dich nicht bewegen"
 error:
   price:
-    invalid: "Preis ist zu niedrig/hoch oder keine Zahl"
+    invalid: "&cPreis ist zu niedrig, zu hoch oder keine Zahl"
   target:
-    invalid: "Kein Block gefunden"
-    noSign: "Block ist kein Schild"
+    invalid: "&cKein Block gefunden"
+    noSign: "&cBlock ist kein Schild"
   break:
-    denied: "Bitte lass dieses Schild in Ruhe"
-  missingArguments: "Mehr Infos. Kek"
-  money: "Kein Geld"
+    denied: "&cBitte lass dieses Schild in Frieden"
+  missingArguments: "&cZu wenig Argumente, du musst mich schon überzeugen!"
+  money: "&cDu hast nicht Geld um dies zu tun"
 sign:
-  lineOne: '&8[&1Verbindung&8]'
-  lineTwo: '&bVon&8: &7{}'
-  lineThree: '&bnach&8: &7{}'
-  lineFour: '&9Für&8: &7{} H'
+  lineOne: "&8[&9Verbindung&8]"
+  lineTwo: "&o&v1"
+  lineThree: "&5Ziel &7(&6&v1 H&7)&8:"
+  lineFour: "&v1"

@@ -23,7 +23,7 @@ public class SaveCommand extends DRECommand {
         setAliases("s", "sv");
         setMinArgs(1);
         setMaxArgs(1);
-        setHelp("No help?");
+        setHelp("/ds save [name]");
         setPlayerCommand(true);
         setConsoleCommand(false);
         setPermission("dreships.cmd.save");
@@ -54,9 +54,9 @@ public class SaveCommand extends DRECommand {
         }
         if (signManager.alreadyCached(player.getUniqueId(), sign)) {
             MessageUtil.sendMessage(player, ShipMessage.CMD_SAVE_ALREADY_CACHED.getMessage());
-            return;
+        } else {
+            signManager.saveSignInCache(player.getUniqueId(), sign, args[1]);
+            MessageUtil.sendMessage(player, ShipMessage.CMD_SAVE_SUCCESS.getMessage());
         }
-        signManager.saveSignInCache(player.getUniqueId(), sign, args[1]);
-        MessageUtil.sendMessage(player, ShipMessage.CMD_SAVE_SUCCESS.getMessage());
     }
 }

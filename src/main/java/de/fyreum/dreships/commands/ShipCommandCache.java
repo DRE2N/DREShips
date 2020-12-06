@@ -3,6 +3,7 @@ package de.fyreum.dreships.commands;
 import de.erethon.commons.command.DRECommand;
 import de.erethon.commons.command.DRECommandCache;
 import de.erethon.commons.javaplugin.DREPlugin;
+import de.fyreum.dreships.function.PriceCalculation;
 import org.bukkit.command.Command;
 import org.bukkit.command.CommandSender;
 import org.bukkit.command.TabCompleter;
@@ -50,6 +51,14 @@ public class ShipCommandCache extends DRECommandCache implements TabCompleter {
                 if(string.toLowerCase().startsWith(args[0])) completes.add(string);
             }
             return completes;
+        }
+        if (args.length == 2) {
+            if (createCommand.getCommand().equalsIgnoreCase(args[0]) || createCommand.getAliases().contains(args[0])) {
+                for(String string : PriceCalculation.getTravelTypes()) {
+                    if(string.toLowerCase().startsWith(args[1].toLowerCase())) completes.add(string);
+                }
+                return completes;
+            }
         }
         return null;
     }

@@ -8,6 +8,7 @@ import de.fyreum.dreships.DREShips;
 import org.bukkit.command.CommandSender;
 
 import java.util.ArrayList;
+import java.util.List;
 import java.util.Set;
 
 public class HelpCommand extends DRECommand {
@@ -26,7 +27,7 @@ public class HelpCommand extends DRECommand {
 
     @Override
     public void onExecute(String[] args, CommandSender sender) {
-        Set<DRECommand> dCommandList = plugin.getCommandCache().getCommands();
+        Set<DRECommand> dCommandSet = plugin.getCommandCache().getCommands();
         ArrayList<DRECommand> toSend = new ArrayList<>();
 
         int page = 1;
@@ -36,7 +37,7 @@ public class HelpCommand extends DRECommand {
         int send = 0;
         int max = 0;
         int min = 0;
-        for (DRECommand dCommand : dCommandList) {
+        for (DRECommand dCommand : dCommandSet) {
             send++;
             if (send >= page * 5 - 4 && send <= page * 5) {
                 min = page * 5 - 4;

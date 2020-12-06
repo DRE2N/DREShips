@@ -4,16 +4,16 @@ import de.erethon.commons.chat.MessageUtil;
 import de.erethon.commons.compatibility.Internals;
 import de.erethon.commons.javaplugin.DREPlugin;
 import de.erethon.commons.javaplugin.DREPluginSettings;
+import de.erethon.factionsxl.FactionsXL;
 import de.fyreum.dreships.commands.ShipCommandCache;
 import de.fyreum.dreships.config.ShipConfig;
-import de.fyreum.dreships.config.ShipMessage;
 import de.fyreum.dreships.sign.SignListener;
 import de.fyreum.dreships.sign.SignManager;
 import net.milkbowl.vault.economy.Economy;
+import org.bukkit.Bukkit;
 import org.bukkit.Material;
 import org.bukkit.NamespacedKey;
 import org.bukkit.block.Block;
-import org.bukkit.plugin.RegisteredServiceProvider;
 
 import java.io.File;
 import java.util.Arrays;
@@ -27,6 +27,7 @@ public final class DREShips extends DREPlugin {
     private SignManager signManager;
     private ShipCommandCache commandCache;
     private ShipConfig shipConfig;
+    private FactionsXL factionsXL = null;
 
     private static final Set<Material> SIGNS = new HashSet<>(Arrays.asList(
             Material.OAK_SIGN,
@@ -59,15 +60,24 @@ public final class DREShips extends DREPlugin {
     @Override
     public void onEnable() {
         super.onEnable();
+        // instantiation
         plugin = this;
         shipConfig = new ShipConfig(new File(getDataFolder(), "config.yml"));
         economy = getEconomyProvider();
         signManager = new SignManager();
         commandCache = new ShipCommandCache(this);
-        setCommandCache(commandCache);
+        // fxl integration
+        if (Bukkit.getPluginManager().isPluginEnabled("FactionsXL") && Bukkit.getPluginManager().getPlugin("FactionsXL") != null) {
+            factionsXL = (FactionsXL) Bukkit.getPluginManager().getPlugin("FactionsXL");
+            MessageUtil.log("&aSuccessfully found FactionsXL on the server!");
+        } else {
+            MessageUtil.log("&4Couldn't find FactionsXL on the server -> some features may not work");
+        }
+        // setup
+        this.setCommandCache(commandCache);
         commandCache.register(this);
-        getCommand("dreships").setTabCompleter(commandCache);
-        getServer().getPluginManager().registerEvents(new SignListener(), getInstance());
+        this.getCommand("dreships").setTabCompleter(commandCache);
+        this.getServer().getPluginManager().registerEvents(new SignListener(), getInstance());
         this.attemptToSaveResource("languages/german.yml", false);
         this.getMessageHandler().setDefaultLanguage("german");
     }
@@ -91,8 +101,11 @@ public final class DREShips extends DREPlugin {
     }
 
     public ShipConfig getShipConfig () {
-        MessageUtil.log("Looking for ship config..." + shipConfig.toString());
         return shipConfig;
+    }
+
+    public FactionsXL getFactionsXL() {
+        return factionsXL;
     }
 
     public static boolean isSign(Block block) {

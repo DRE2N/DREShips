@@ -20,7 +20,7 @@ public class CreateCommand extends DRECommand {
         setAliases("c", "cr");
         setMinArgs(1);
         setMaxArgs(1);
-        setHelp("No help?");
+        setHelp("/ds create [price]");
         setPlayerCommand(true);
         setConsoleCommand(false);
         setPermission("dreships.cmd.create");
@@ -43,11 +43,9 @@ public class CreateCommand extends DRECommand {
                     MessageUtil.sendMessage(player, ShipMessage.ERROR_PRICE_INVALID.getMessage());
                     return;
                 }
-                MessageUtil.sendMessage(player, ShipMessage.CMD_CREATE_START.getMessage());
-                signManager.createFromCache(player.getUniqueId(), price);
+                signManager.createFromCache(commandSender, player.getUniqueId(), price);
             } else {
-                MessageUtil.sendMessage(player, ShipMessage.CMD_CREATE_START.getMessage());
-                signManager.calculateAndCreateFromCache(player.getUniqueId(), multipliedDistance);
+                signManager.calculateAndCreateFromCache(commandSender, player.getUniqueId(), multipliedDistance);
             }
         } catch (CacheSignException c) {
             MessageUtil.sendMessage(player, ShipMessage.CMD_CACHE_EMPTY.getMessage());

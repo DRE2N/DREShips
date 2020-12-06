@@ -1,9 +1,11 @@
 package de.fyreum.dreships.function;
 
-import de.erethon.commons.chat.MessageUtil;
 import de.fyreum.dreships.DREShips;
 import de.fyreum.dreships.config.ShipConfig;
 import org.bukkit.Location;
+
+import java.util.Arrays;
+import java.util.List;
 
 public class PriceCalculation {
 
@@ -30,6 +32,10 @@ public class PriceCalculation {
             return config.getLandDistanceMultiplier();
         }
         return -1;
+    }
+
+    public static List<String> getTravelTypes() {
+        return Arrays.asList("airship", "ship", "land");
     }
 
 }
