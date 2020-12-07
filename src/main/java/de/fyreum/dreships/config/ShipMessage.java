@@ -4,15 +4,8 @@ import de.erethon.commons.chat.MessageUtil;
 import de.erethon.commons.config.Message;
 import de.erethon.commons.config.MessageHandler;
 import de.fyreum.dreships.DREShips;
-import net.md_5.bungee.api.ChatColor;
-import org.bukkit.Bukkit;
 import org.bukkit.command.CommandSender;
 import org.bukkit.entity.Player;
-
-import java.util.regex.Matcher;
-import java.util.regex.Pattern;
-
-import static net.md_5.bungee.api.ChatColor.translateAlternateColorCodes;
 
 public enum ShipMessage implements Message {
 
@@ -26,10 +19,10 @@ public enum ShipMessage implements Message {
     CMD_INFO_NO_SIGN("cmd.info.noSign"),
     CMD_INFO_NO_TRAVEL_SIGN("cmd.info.noTravelSign"),
     CMD_SAVE_ALREADY_SIGN("cmd.save.alreadySign"),
-    CMD_SAVE_ALREADY_CACHED("cmd.save.alreadyCached"),
     CMD_SAVE_SUCCESS("cmd.save.success"),
     CMD_TP_SUGGESTION("cmd.tp.suggestion"),
     CMD_TP_HOVER_TEXT("cmd.tp.hoverText"),
+    CMD_TP_NOT_WHITELISTED("cmd.tp.notWhitelisted"),
     ERROR_PRICE_INVALID("error.price.invalid"),
     ERROR_TARGET_BLOCK_INVALID("error.target.invalid"),
     ERROR_TARGET_NO_SIGN("error.target.noSign"),

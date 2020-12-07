@@ -7,6 +7,7 @@ import de.erethon.commons.javaplugin.DREPluginSettings;
 import de.erethon.factionsxl.FactionsXL;
 import de.fyreum.dreships.commands.ShipCommandCache;
 import de.fyreum.dreships.config.ShipConfig;
+import de.fyreum.dreships.function.TeleportationUtil;
 import de.fyreum.dreships.sign.SignListener;
 import de.fyreum.dreships.sign.SignManager;
 import net.milkbowl.vault.economy.Economy;
@@ -24,9 +25,10 @@ public final class DREShips extends DREPlugin {
 
     private static DREShips plugin;
     private Economy economy = null;
-    private SignManager signManager;
-    private ShipCommandCache commandCache;
     private ShipConfig shipConfig;
+    private SignManager signManager;
+    private TeleportationUtil teleportationUtil;
+    private ShipCommandCache commandCache;
     private FactionsXL factionsXL = null;
 
     private static final Set<Material> SIGNS = new HashSet<>(Arrays.asList(
@@ -65,6 +67,7 @@ public final class DREShips extends DREPlugin {
         shipConfig = new ShipConfig(new File(getDataFolder(), "config.yml"));
         economy = getEconomyProvider();
         signManager = new SignManager();
+        teleportationUtil = new TeleportationUtil(this);
         commandCache = new ShipCommandCache(this);
         // fxl integration
         if (Bukkit.getPluginManager().isPluginEnabled("FactionsXL") && Bukkit.getPluginManager().getPlugin("FactionsXL") != null) {
@@ -98,6 +101,15 @@ public final class DREShips extends DREPlugin {
 
     public SignManager getSignManager() {
         return signManager;
+    }
+
+    public TeleportationUtil getTeleportationUtil() {
+        return teleportationUtil;
+    }
+
+    @Override
+    public ShipCommandCache getCommandCache() {
+        return commandCache;
     }
 
     public ShipConfig getShipConfig () {

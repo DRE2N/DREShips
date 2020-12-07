@@ -20,6 +20,7 @@ cmd:
   tp:
     suggestion: "&6&oIch bin mir dessen bewusst."
     hoverText: "&7Teleportieren?"
+    notWhitelisted: "&7Deine Berechtigung für diesen Befehl ist &9abgelaufen&7. Dies geschieht nach &9&v1 Sekunden"
 tp:
   success: "&7Du bist von &b&v1 &7nach &b&v2 &7für &9&v3 &7gereist"
   taxMessage: "&aEs wurden &6&v2 &aGebühren auf das Konto von [&v3] überwiesen."

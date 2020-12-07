@@ -40,7 +40,7 @@ public class ShipCommandCache extends DRECommandCache implements TabCompleter {
     public List<String> onTabComplete(CommandSender sender, Command command, String alias, String[] args) {
         List<String> cmds = new ArrayList<>();
         for (DRECommand cmd : getCommands()) {
-            if (sender.hasPermission(cmd.getPermission())) {
+            if (cmd.getPermission() != null && !cmd.getPermission().isEmpty() && sender.hasPermission(cmd.getPermission())) {
                 cmds.add(cmd.getCommand());
             }
         }

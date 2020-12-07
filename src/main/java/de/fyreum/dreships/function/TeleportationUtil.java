@@ -3,13 +3,15 @@ package de.fyreum.dreships.function;
 import de.erethon.commons.chat.MessageUtil;
 import de.erethon.factionsxl.FactionsXL;
 import de.erethon.factionsxl.faction.Faction;
-import de.erethon.factionsxl.util.CooldownTeleportationTask;
 import de.fyreum.dreships.DREShips;
+import de.fyreum.dreships.config.ShipConfig;
 import de.fyreum.dreships.config.ShipMessage;
 import de.fyreum.dreships.event.ShipTeleportationEvent;
 import de.fyreum.dreships.event.TeleportationPreparationEvent;
 import de.fyreum.dreships.sign.TravelSign;
-import net.md_5.bungee.api.chat.*;
+import net.md_5.bungee.api.chat.ClickEvent;
+import net.md_5.bungee.api.chat.HoverEvent;
+import net.md_5.bungee.api.chat.TextComponent;
 import net.md_5.bungee.api.chat.hover.content.Text;
 import net.milkbowl.vault.economy.Economy;
 import org.bukkit.Bukkit;
@@ -19,7 +21,6 @@ import org.bukkit.block.Block;
 import org.bukkit.block.data.type.Sign;
 import org.bukkit.block.data.type.WallSign;
 import org.bukkit.entity.Player;
-import org.bukkit.plugin.Plugin;
 import org.bukkit.scheduler.BukkitRunnable;
 import org.jetbrains.annotations.NotNull;
 
@@ -27,27 +28,31 @@ import java.util.*;
 
 public class TeleportationUtil {
 
+    private final DREShips plugin;
+    private final ShipConfig config;
     private final Economy economy;
     private final FactionsXL factionsXL;
     private final List<UUID> currentlyTeleporting;
     private static final String commandVerifier = UUID.randomUUID().toString();
+    private static final Set<UUID> commandWhitelist = new HashSet<>();
 
     public TeleportationUtil(DREShips plugin) {
+        this.plugin = plugin;
+        this.config = plugin.getShipConfig();
         this.economy = plugin.getEconomy();
         this.factionsXL = plugin.getFactionsXL();
         this.currentlyTeleporting = new ArrayList<>();
     }
 
-    public void teleport(@NotNull Player player, @NotNull TravelSign travelSign) {
+    public void teleport(@NotNull Player player, @NotNull TravelSign travelSign, boolean ignoreWarnings) {
         if (this.economy != null && !this.economy.has(player, travelSign.getPrice())) {
             MessageUtil.sendMessage(player, ShipMessage.ERROR_NO_MONEY.getMessage());
             return;
         }
-        if (unsafeDestination(travelSign.getDestination())) {
+        if (!ignoreWarnings && unsafeDestination(travelSign.getDestination())) {
+            whitelistPlayer(player.getUniqueId());
             ShipMessage.WARN_SUFFOCATION.sendMessage(player);
-            if (player.hasPermission("dreships.cmd.teleport")) {
-                player.sendMessage(teleportMessage(travelSign.getDestination()));
-            }
+            player.sendMessage(teleportMessage(travelSign.getLocation()));
             return;
         }
         String priceString = economy == null ? String.valueOf(travelSign.getPrice()) : String.valueOf(economy.format(travelSign.getPrice()));
@@ -57,7 +62,7 @@ public class TeleportationUtil {
 
     private void teleport(Player player, Location destination, double price, String message) {
         TeleportationPreparationEvent preparationEvent = new TeleportationPreparationEvent(player);
-        if (player.hasPermission("dreships.cmd.teleport")) {
+        if (player.hasPermission("dreships.bypass")) {
             preparationEvent.setSkipped(true);
         }
 
@@ -75,14 +80,11 @@ public class TeleportationUtil {
 
     private void teleportPlayer(Player player, Location destination, double price, String message) {
         if (economy != null) {
-            MessageUtil.log("Economy is not null");
             economy.withdrawPlayer(player, price);
             if (factionsXL != null) {
-                MessageUtil.log("FactionsXL is not null");
                 Faction faction = factionsXL.getFactionCache().getByChunk(player.getChunk());
                 if (faction != null) {
-                    MessageUtil.log("Faction is not null");
-                    double tax = price*DREShips.getInstance().getShipConfig().getTaxMultiplier();
+                    double tax = price*config.getTaxMultiplier();
                     faction.getAccount().deposit(tax);
                     for (Player member : faction.getMembers().getOnlinePlayers()) {
                         ShipMessage.TP_TAX_MESSAGE.sendMessage(member, player.getName(), economy.format(tax), faction.getShortName());
@@ -101,6 +103,11 @@ public class TeleportationUtil {
             player.teleportAsync(destination.add(0.5, 0, 0.5));
         }
         MessageUtil.sendActionBarMessage(player, message);
+    }
+
+    private void whitelistPlayer(UUID uuid) {
+        commandWhitelist.add(uuid);
+        Bukkit.getScheduler().runTaskLater(plugin, () -> commandWhitelist.remove(uuid), config.getWhitelistedTeleportationTime());
     }
 
     private String multipliedString(int multiply) {
@@ -133,6 +140,10 @@ public class TeleportationUtil {
 
     public boolean unsafeDestination(Location destination) {
         return destination.getWorld().getBlockAt((int) destination.getX(), (int) destination.getY() + 1, (int) destination.getZ()).getType().isSolid();
+    }
+
+    public static boolean whitelistedPlayer(UUID uuid) {
+        return commandWhitelist.contains(uuid);
     }
 
     public static String getCommandVerifier() {
@@ -182,7 +193,7 @@ public class TeleportationUtil {
                     }
                 }
             };
-            runnable.runTaskTimer(DREShips.getInstance(), 0, 20);
+            runnable.runTaskTimer(plugin, 0, 20);
         }
     }
 }

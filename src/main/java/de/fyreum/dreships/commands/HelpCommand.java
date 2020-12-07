@@ -8,7 +8,6 @@ import de.fyreum.dreships.DREShips;
 import org.bukkit.command.CommandSender;
 
 import java.util.ArrayList;
-import java.util.List;
 import java.util.Set;
 
 public class HelpCommand extends DRECommand {
@@ -18,6 +17,7 @@ public class HelpCommand extends DRECommand {
     public HelpCommand() {
         setCommand("help");
         setAliases("h", "?", "main");
+        setHelp("/ds help");
         setMinArgs(0);
         setMaxArgs(1);
         setPermission("dreships.cmd.help");

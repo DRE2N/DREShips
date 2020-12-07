@@ -11,7 +11,7 @@ import org.bukkit.persistence.PersistentDataType;
 public final class TravelSign {
 
     private final String name, destinationName;
-    private final Location destination;
+    private final Location location, destination;
     private final int price;
 
     private static final NamespacedKey nameKey = DREShips.getNamespace("name");
@@ -19,19 +19,21 @@ public final class TravelSign {
     private static final NamespacedKey destinationKey = DREShips.getNamespace("destination");
     private static final NamespacedKey priceKey = DREShips.getNamespace("price");
 
-    public TravelSign(String name, String destinationName, Location destination, int price) {
+    public TravelSign(String name, String destinationName, Location location, Location destination, int price) {
         this.name = name;
         this.destinationName = destinationName;
+        this.location = location;
         this.destination = destination;
         this.price = price;
     }
 
-    public TravelSign(Sign sign) {
+    public TravelSign(Sign sign) throws IllegalArgumentException {
         if (!travelSign(sign)) {
             throw new IllegalArgumentException("The given sign doesn't contain the required TravelSign data so it's no TravelSign");
         }
         this.name = sign.getPersistentDataContainer().get(nameKey, PersistentDataType.STRING);
         this.destinationName = sign.getPersistentDataContainer().get(destinationNameKey, PersistentDataType.STRING);
+        this.location = sign.getLocation();
         this.destination = sign.getPersistentDataContainer().get(destinationKey, ShipDataTypes.LOCATION);
         this.price = sign.getPersistentDataContainer().get(priceKey, PersistentDataType.INTEGER);
     }
@@ -61,6 +63,10 @@ public final class TravelSign {
 
     public String getDestinationName() {
         return destinationName;
+    }
+
+    public Location getLocation() {
+        return location;
     }
 
     public Location getDestination() {

@@ -14,6 +14,7 @@ public class ShipConfig extends DREConfig  {
     private double shipDistanceMultiplier = 0.10;
     private double startPrice = 10.00;
     private double taxMultiplier = 0.05;
+    private long whitelistedTeleportationTime = 100;
 
     public ShipConfig(File file) {
         super(file, CONFIG_VERSION);
@@ -47,6 +48,10 @@ public class ShipConfig extends DREConfig  {
         return taxMultiplier;
     }
 
+    public long getWhitelistedTeleportationTime() {
+        return whitelistedTeleportationTime;
+    }
+
     @Override
     public void initialize() {
         if (!config.contains("language")) {
@@ -67,6 +72,9 @@ public class ShipConfig extends DREConfig  {
         if (!config.contains("taxMultiplier")) {
             config.set("taxMultiplier", taxMultiplier);
         }
+        if (!config.contains("whitelistedTeleportationTime")) {
+            config.set("whitelistedTeleportationTime", whitelistedTeleportationTime);
+        }
         save();
     }
 
@@ -78,6 +86,7 @@ public class ShipConfig extends DREConfig  {
         config.set("multiplier.ship", shipDistanceMultiplier);
         config.set("startPrice", startPrice);
         config.set("taxMultiplier", taxMultiplier);
+        config.set("whitelistedTeleportationTime", whitelistedTeleportationTime);
         super.save();
     }
 
@@ -89,5 +98,6 @@ public class ShipConfig extends DREConfig  {
         shipDistanceMultiplier = config.getDouble("multiplier.ship");
         startPrice = config.getDouble("startPrice");
         taxMultiplier = config.getDouble("taxMultiplier");
+        whitelistedTeleportationTime = config.getLong("whitelistedTeleportationTime");
     }
 }

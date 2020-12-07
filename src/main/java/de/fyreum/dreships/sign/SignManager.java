@@ -5,6 +5,8 @@ import de.fyreum.dreships.DREShips;
 import de.fyreum.dreships.config.ShipMessage;
 import de.fyreum.dreships.function.PriceCalculation;
 import de.fyreum.dreships.persistentdata.ShipDataTypes;
+import de.fyreum.dreships.sign.cache.CacheSignException;
+import de.fyreum.dreships.sign.cache.PlayerCache;
 import org.bukkit.Location;
 import org.bukkit.block.Block;
 import org.bukkit.block.Sign;
@@ -13,63 +15,45 @@ import org.bukkit.persistence.PersistentDataType;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
 
-import java.util.*;
+import java.util.UUID;
 
 public class SignManager {
 
-    private final Map<UUID, List<CacheSign>> playerCache;
+    private final PlayerCache playerCache;
     private final PriceCalculation priceCalculation;
 
     public SignManager() {
-        this.playerCache = new HashMap<>();
+        this.playerCache = new PlayerCache();
         this.priceCalculation = new PriceCalculation();
-    }
-
-    // ---------CacheSign----------
-
-    public void saveSignInCache(@NotNull UUID uuid, Sign sign, String name) {
-        if (!playerCache.containsKey(uuid)) {
-            playerCache.put(uuid, new ArrayList<>());
-        }
-        if (playerCache.get(uuid).size() > 1) {
-            playerCache.get(uuid).set(0, new CacheSign(sign, name));
-        } else {
-            playerCache.get(uuid).add(new CacheSign(sign, name));
-        }
     }
 
     // ----------TravelSign---------
 
-    public int createFromCache(@NotNull CommandSender sender, @NotNull UUID uuid, int price) throws CacheSignException {
-        if (playerCache.get(uuid) == null || playerCache.get(uuid).size() != 2) {
+    public void createFromCache(@NotNull CommandSender sender, @NotNull UUID uuid, int price) throws CacheSignException {
+        if (!playerCache.isFull(uuid)) {
             throw new CacheSignException("Couldn't create a TravelSign. Player cache is empty.");
         }
-        Sign sign = playerCache.get(uuid).get(0).getSign();
-        Sign destination = playerCache.get(uuid).get(1).getSign();
-        String name = playerCache.get(uuid).get(0).getName();
-        String destinationName = playerCache.get(uuid).get(1).getName();
+        Sign sign = playerCache.getFirst(uuid).getSign();
+        String name = playerCache.getFirst(uuid).getName();
+        Sign destination = playerCache.getSecond(uuid).getSign();
+        String destinationName = playerCache.getSecond(uuid).getName();
 
         this.create(sender, sign, destination, name, destinationName, price);
-        playerCache.get(uuid).clear();
-        return price;
+        this.playerCache.clear(uuid);
     }
 
-    public int calculateAndCreateFromCache(@NotNull CommandSender sender, @NotNull UUID uuid, double multipliedDistance) throws CacheSignException {
-        if (playerCache.get(uuid) == null || playerCache.get(uuid).size() != 2) {
+    public void calculateAndCreateFromCache(@NotNull CommandSender sender, @NotNull UUID uuid, double multipliedDistance) throws CacheSignException {
+        if (!playerCache.isFull(uuid)) {
             throw new CacheSignException("Couldn't create a TravelSign. Player cache is empty.");
         }
-        CacheSign cachedSign = playerCache.get(uuid).get(0);
-        CacheSign cachedDestination = playerCache.get(uuid).get(1);
-
-        Sign sign = cachedSign.getSign();
-        Sign destination = cachedDestination.getSign();
-        String name = cachedSign.getName();
-        String destinationName = cachedDestination.getName();
+        Sign sign = playerCache.getFirst(uuid).getSign();
+        String name = playerCache.getFirst(uuid).getName();
+        Sign destination = playerCache.getSecond(uuid).getSign();
+        String destinationName = playerCache.getSecond(uuid).getName();
 
         int price = this.priceCalculation.calculate(sign.getLocation(), destination.getLocation(), multipliedDistance);
         this.create(sender, sign, destination, name, destinationName, price);
-        playerCache.get(uuid).clear();
-        return price;
+        this.playerCache.clear(uuid);
     }
 
     public void create(@NotNull CommandSender sender, @NotNull Sign sign, @NotNull Sign destination, String name, String destinationName, int price) {
@@ -190,19 +174,7 @@ public class SignManager {
         return "[x=" + location.getX() + ", y=" + location.getY() + ", z=" + location.getZ();
     }
 
-    public boolean alreadyCached(UUID uuid, Sign sign) {
-        if (!playerCache.containsKey(uuid)) {
-            return false;
-        }
-        for (CacheSign cacheSign : playerCache.get(uuid)) {
-            if (cacheSign.getSign().getLocation().equals(sign.getLocation())) {
-                return true;
-            }
-        }
-        return false;
-    }
-
-    public Map<UUID, List<CacheSign>> getPlayerCache() {
+    public PlayerCache getPlayerCache() {
         return playerCache;
     }
 

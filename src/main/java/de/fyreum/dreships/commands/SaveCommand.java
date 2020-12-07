@@ -2,16 +2,15 @@ package de.fyreum.dreships.commands;
 
 import de.erethon.commons.chat.MessageUtil;
 import de.erethon.commons.command.DRECommand;
-import de.erethon.commons.config.CommonMessage;
 import de.fyreum.dreships.DREShips;
 import de.fyreum.dreships.config.ShipMessage;
 import de.fyreum.dreships.sign.SignManager;
 import de.fyreum.dreships.sign.TravelSign;
+import de.fyreum.dreships.sign.cache.CacheSign;
 import org.bukkit.block.Block;
 import org.bukkit.block.Sign;
 import org.bukkit.command.CommandSender;
 import org.bukkit.entity.Player;
-
 
 public class SaveCommand extends DRECommand {
 
@@ -52,11 +51,7 @@ public class SaveCommand extends DRECommand {
             MessageUtil.sendMessage(player, ShipMessage.ERROR_TARGET_NO_SIGN.getMessage());
             return;
         }
-        if (signManager.alreadyCached(player.getUniqueId(), sign)) {
-            MessageUtil.sendMessage(player, ShipMessage.CMD_SAVE_ALREADY_CACHED.getMessage());
-        } else {
-            signManager.saveSignInCache(player.getUniqueId(), sign, args[1]);
-            MessageUtil.sendMessage(player, ShipMessage.CMD_SAVE_SUCCESS.getMessage());
-        }
+        signManager.getPlayerCache().save(player.getUniqueId(), new CacheSign(sign, args[1]));
+        ShipMessage.CMD_SAVE_SUCCESS.sendMessage(player);
     }
 }

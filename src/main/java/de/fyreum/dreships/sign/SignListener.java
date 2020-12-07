@@ -14,11 +14,7 @@ import org.bukkit.event.player.PlayerInteractEvent;
 
 public class SignListener implements Listener {
 
-    private final TeleportationUtil teleportationUtil;
-
-    public SignListener() {
-        this.teleportationUtil = new TeleportationUtil(DREShips.getInstance());
-    }
+    private final TeleportationUtil teleportationUtil = DREShips.getInstance().getTeleportationUtil();
 
     @EventHandler
     public void handleSignInteract(PlayerInteractEvent event) {
@@ -38,7 +34,7 @@ public class SignListener implements Listener {
             return;
         }
         if (!teleportationUtil.isTeleporting(event.getPlayer())) {
-            teleportationUtil.teleport(event.getPlayer(), sign);
+            teleportationUtil.teleport(event.getPlayer(), sign, false);
         }
     }
 
