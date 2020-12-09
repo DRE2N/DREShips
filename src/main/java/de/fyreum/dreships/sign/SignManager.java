@@ -171,7 +171,7 @@ public class SignManager {
     /* getter */
 
     public static String simplify(Location location) {
-        return "[x=" + location.getX() + ", y=" + location.getY() + ", z=" + location.getZ();
+        return "[x=" + location.getX() + ", y=" + location.getY() + ", z=" + location.getZ() + "]";
     }
 
     public PlayerCache getPlayerCache() {

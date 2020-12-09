@@ -10,7 +10,7 @@ cmd:
     failed: "&7Es wurden keine Schilder gelöscht"
   help: "&6Siehe die bei /ds help beschriebenen Befehle"
   info:
-    travelSign: "&8---[&1Verbindung&8]---\n &bvon&8: &7&v1\n &bnach&8: &7&v2 (&v3)\n &bfür&8: &7&v4 Heronen"
+    travelSign: "&8---------&l[ &bVerbindung&8 &l]&r&8---------\n&c> &3von&8: &6&v1 &7(&v2)\n&a> &3nach&8: &6&v3 &7(&v4)\n&c> &3für&8: &6&v5 Heronen"
     noSign: "&cEs können nur Schilder Verbindungen beinhalten"
     noTravelSign: "&7Keine Verbindung gefunden"
   save:
@@ -21,6 +21,8 @@ cmd:
     suggestion: "&6&oIch bin mir dessen bewusst."
     hoverText: "&7Teleportieren?"
     notWhitelisted: "&7Deine Berechtigung für diesen Befehl ist &9abgelaufen&7. Dies geschieht nach &9&v1 Sekunden"
+  reload:
+    success: "&aConfig wurde neugeladen"
 tp:
   success: "&7Du bist von &b&v1 &7nach &b&v2 &7für &9&v3 &7gereist"
   taxMessage: "&aEs wurden &6&v2 &aGebühren auf das Konto von [&v3] überwiesen."

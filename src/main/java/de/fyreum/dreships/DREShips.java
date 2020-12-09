@@ -50,7 +50,6 @@ public final class DREShips extends DREPlugin {
             Material.WARPED_WALL_SIGN
     ));
 
-
     public DREShips() {
         settings = DREPluginSettings.builder()
                 .paper(true)
@@ -64,7 +63,7 @@ public final class DREShips extends DREPlugin {
         super.onEnable();
         // instantiation
         plugin = this;
-        shipConfig = new ShipConfig(new File(getDataFolder(), "config.yml"));
+        this.instantiateConfig();
         economy = getEconomyProvider();
         signManager = new SignManager();
         teleportationUtil = new TeleportationUtil(this);
@@ -83,6 +82,10 @@ public final class DREShips extends DREPlugin {
         this.getServer().getPluginManager().registerEvents(new SignListener(), getInstance());
         this.attemptToSaveResource("languages/german.yml", false);
         this.getMessageHandler().setDefaultLanguage("german");
+    }
+
+    public void instantiateConfig() {
+        shipConfig = new ShipConfig(new File(getDataFolder(), "config.yml"));
     }
 
     /* getter */

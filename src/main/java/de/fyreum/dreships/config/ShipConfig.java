@@ -9,9 +9,9 @@ public class ShipConfig extends DREConfig  {
     public static final int CONFIG_VERSION = 1;
 
     private String language = "german";
-    private double airshipDistanceMultiplier = 0.10;
-    private double landDistanceMultiplier = 0.10;
-    private double shipDistanceMultiplier = 0.10;
+    private double airshipDistanceMultiplier = 0.025;
+    private double landDistanceMultiplier = 0.03;
+    private double shipDistanceMultiplier = 0.03;
     private double startPrice = 10.00;
     private double taxMultiplier = 0.05;
     private long whitelistedTeleportationTime = 100;

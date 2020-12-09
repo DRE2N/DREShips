@@ -1,7 +1,6 @@
 package de.fyreum.dreships.function;
 
 import de.fyreum.dreships.DREShips;
-import de.fyreum.dreships.config.ShipConfig;
 import org.bukkit.Location;
 
 import java.util.Arrays;
@@ -10,10 +9,9 @@ import java.util.List;
 public class PriceCalculation {
 
     DREShips plugin = DREShips.getInstance();
-    ShipConfig config = plugin.getShipConfig();
 
     public int calculate(double distance, double distanceMultipliedPrice) {
-        return (int) Math.ceil((distance * distanceMultipliedPrice) + config.getStartPrice());
+        return (int) Math.ceil((distance * distanceMultipliedPrice) + plugin.getShipConfig().getStartPrice());
     }
 
     public int calculate(Location loc1, Location loc2, double distanceMultipliedPrice) {
@@ -23,13 +21,13 @@ public class PriceCalculation {
 
     public double getDistanceMultiplier(String name) {
         if (name.equalsIgnoreCase("AIRSHIP")) {
-            return config.getAirshipDistanceMultiplier();
+            return plugin.getShipConfig().getAirshipDistanceMultiplier();
         }
         if (name.equalsIgnoreCase("SHIP")) {
-            return config.getShipDistanceMultiplier();
+            return plugin.getShipConfig().getShipDistanceMultiplier();
         }
         if (name.equalsIgnoreCase("LAND")) {
-            return config.getLandDistanceMultiplier();
+            return plugin.getShipConfig().getLandDistanceMultiplier();
         }
         return -1;
     }

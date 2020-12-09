@@ -36,7 +36,11 @@ public class InfoCommand extends DRECommand {
             return;
         }
         TravelSign sign = new TravelSign((Sign) target.getState());
-        MessageUtil.sendMessage(player, ShipMessage.CMD_INFO_TRAVEL_SIGN.getMessage(sign.getName(),
-                sign.getDestinationName(), SignManager.simplify(sign.getDestination()), String.valueOf(sign.getPrice())));
+        MessageUtil.sendMessage(player, ShipMessage.CMD_INFO_TRAVEL_SIGN.getMessage(
+                sign.getName(),
+                SignManager.simplify(sign.getLocation()),
+                sign.getDestinationName(),
+                SignManager.simplify(sign.getDestination()),
+                String.valueOf(sign.getPrice())));
     }
 }

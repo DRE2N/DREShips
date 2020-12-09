@@ -16,13 +16,13 @@ public class ShipCommandCache extends DRECommandCache implements TabCompleter {
     public static final String LABEL = "dreships";
     DREPlugin plugin;
 
-
     public InfoCommand infoCommand = new InfoCommand();
     public CreateCommand createCommand = new CreateCommand();
     public DeleteCommand deleteCommand = new DeleteCommand();
     public SaveCommand saveCommand = new SaveCommand();
     public TeleportCommand teleportCommand = new TeleportCommand();
     public HelpCommand helpCommand = new HelpCommand();
+    public ReloadCommand reloadCommand = new ReloadCommand();
 
     public ShipCommandCache(DREPlugin plugin) {
         super(LABEL, plugin);
@@ -34,6 +34,7 @@ public class ShipCommandCache extends DRECommandCache implements TabCompleter {
         addCommand(saveCommand);
         addCommand(teleportCommand);
         addCommand(helpCommand);
+        addCommand(reloadCommand);
     }
 
     @Override

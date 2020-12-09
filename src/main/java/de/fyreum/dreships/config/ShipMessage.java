@@ -23,6 +23,7 @@ public enum ShipMessage implements Message {
     CMD_TP_SUGGESTION("cmd.tp.suggestion"),
     CMD_TP_HOVER_TEXT("cmd.tp.hoverText"),
     CMD_TP_NOT_WHITELISTED("cmd.tp.notWhitelisted"),
+    CMD_RELOAD_success("cmd.reload.success"),
     ERROR_PRICE_INVALID("error.price.invalid"),
     ERROR_TARGET_BLOCK_INVALID("error.target.invalid"),
     ERROR_TARGET_NO_SIGN("error.target.noSign"),
