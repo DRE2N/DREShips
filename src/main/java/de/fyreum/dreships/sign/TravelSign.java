@@ -1,8 +1,8 @@
 package de.fyreum.dreships.sign;
 
 import de.fyreum.dreships.DREShips;
-import de.fyreum.dreships.serialization.SerializableLocation;
 import de.fyreum.dreships.persistentdata.ShipDataTypes;
+import de.fyreum.dreships.serialization.SerializableLocation;
 import org.bukkit.Location;
 import org.bukkit.NamespacedKey;
 import org.bukkit.block.Block;
@@ -10,9 +10,6 @@ import org.bukkit.block.Sign;
 import org.bukkit.persistence.PersistentDataType;
 import org.jetbrains.annotations.Nullable;
 
-import java.io.IOException;
-import java.io.ObjectInputStream;
-import java.io.ObjectOutputStream;
 import java.io.Serializable;
 
 public final class TravelSign implements Serializable {
@@ -92,8 +89,6 @@ public final class TravelSign implements Serializable {
     public boolean isDisabled() {
         return disabled;
     }
-
-
 
     public String getName() {
         return name;

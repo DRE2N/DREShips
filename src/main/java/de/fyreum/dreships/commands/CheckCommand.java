@@ -5,7 +5,6 @@ import de.erethon.commons.command.DRECommand;
 import de.fyreum.dreships.DREShips;
 import de.fyreum.dreships.config.ShipMessage;
 import de.fyreum.dreships.sign.TravelSign;
-import org.bukkit.Location;
 import org.bukkit.block.Block;
 import org.bukkit.block.Sign;
 import org.bukkit.command.CommandSender;
