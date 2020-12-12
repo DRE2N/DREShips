@@ -1,4 +1,4 @@
-package de.fyreum.dreships.function;
+package de.fyreum.dreships.util;
 
 import de.fyreum.dreships.DREShips;
 import org.bukkit.Location;
@@ -6,7 +6,7 @@ import org.bukkit.Location;
 import java.util.Arrays;
 import java.util.List;
 
-public class PriceCalculation {
+public class PriceCalculationUtil {
 
     DREShips plugin = DREShips.getInstance();
 

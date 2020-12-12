@@ -1,13 +1,12 @@
-package de.fyreum.dreships.function;
+package de.fyreum.dreships.util;
 
 import de.erethon.commons.chat.MessageUtil;
 import de.erethon.factionsxl.FactionsXL;
 import de.erethon.factionsxl.faction.Faction;
 import de.fyreum.dreships.DREShips;
-import de.fyreum.dreships.config.ShipConfig;
 import de.fyreum.dreships.config.ShipMessage;
-import de.fyreum.dreships.event.ShipTeleportationEvent;
-import de.fyreum.dreships.event.TeleportationPreparationEvent;
+import de.fyreum.dreships.event.TravelSignTeleportationEvent;
+import de.fyreum.dreships.event.TravelSignTeleportationPreparationEvent;
 import de.fyreum.dreships.sign.TravelSign;
 import net.md_5.bungee.api.chat.ClickEvent;
 import net.md_5.bungee.api.chat.HoverEvent;
@@ -42,7 +41,15 @@ public class TeleportationUtil {
         this.currentlyTeleporting = new ArrayList<>();
     }
 
+    public void teleport(@NotNull Player player, @NotNull TravelSign travelSign) {
+        this.teleport(player, travelSign, false);
+    }
+
     public void teleport(@NotNull Player player, @NotNull TravelSign travelSign, boolean ignoreWarnings) {
+        this.teleport(player, travelSign, ignoreWarnings, false);
+    }
+
+    public void teleport(@NotNull Player player, @NotNull TravelSign travelSign, boolean ignoreWarnings, boolean skip) {
         if (this.economy != null && !this.economy.has(player, travelSign.getPrice())) {
             MessageUtil.sendMessage(player, ShipMessage.ERROR_NO_MONEY.getMessage());
             return;
@@ -55,18 +62,18 @@ public class TeleportationUtil {
         }
         String priceString = economy == null ? String.valueOf(travelSign.getPrice()) : String.valueOf(economy.format(travelSign.getPrice()));
         this.teleport(player, travelSign.getDestination(), travelSign.getPrice(),
-                ShipMessage.TP_SUCCESS.getMessage(travelSign.getName(), travelSign.getDestinationName(), priceString));
+                ShipMessage.TP_SUCCESS.getMessage(travelSign.getName(), travelSign.getDestinationName(), priceString), skip);
     }
 
-    private void teleport(Player player, Location destination, double price, String message) {
-        TeleportationPreparationEvent preparationEvent = new TeleportationPreparationEvent(player);
-        if (player.hasPermission("dreships.bypass")) {
+    private void teleport(Player player, Location destination, double price, String message, boolean skip) {
+        TravelSignTeleportationPreparationEvent preparationEvent = new TravelSignTeleportationPreparationEvent(player);
+        if (player.hasPermission("dreships.bypass") | skip) {
             preparationEvent.setSkipped(true);
         }
 
         if (preparationEvent.callEvent()) {
             if (preparationEvent.isSkipped()) {
-                ShipTeleportationEvent teleportationEvent = new ShipTeleportationEvent(player, player.getLocation(), destination);
+                TravelSignTeleportationEvent teleportationEvent = new TravelSignTeleportationEvent(player, player.getLocation(), destination);
                 if (teleportationEvent.callEvent()) {
                     this.teleportPlayer(player, teleportationEvent.getDestination(), price, message);
                 }
@@ -144,8 +151,8 @@ public class TeleportationUtil {
         return commandWhitelist.contains(uuid);
     }
 
-    public static String getCommandVerifier() {
-        return commandVerifier;
+    public static boolean verifyIdentifier(String s) {
+        return commandVerifier.equals(s);
     }
 
     class CooldownTeleportation {
@@ -174,7 +181,7 @@ public class TeleportationUtil {
                             location.getBlockY() && player.getLocation().getBlockZ() == location.getBlockZ()) {
                         player.sendActionBar(ChatColor.GREEN + multipliedString(repeats) + ChatColor.DARK_RED + multipliedString(10 - repeats));
                         if (repeats == 10) {
-                            ShipTeleportationEvent teleportationEvent = new ShipTeleportationEvent(player, player.getLocation(), destination);
+                            TravelSignTeleportationEvent teleportationEvent = new TravelSignTeleportationEvent(player, player.getLocation(), destination);
 
                             if (teleportationEvent.callEvent()) {
                                 teleportPlayer(player, teleportationEvent.getDestination(), price, message);

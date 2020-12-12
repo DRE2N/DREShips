@@ -8,7 +8,10 @@ import de.fyreum.dreships.DREShips;
 import org.bukkit.command.CommandSender;
 
 import java.util.ArrayList;
+import java.util.Comparator;
+import java.util.List;
 import java.util.Set;
+import java.util.stream.Collectors;
 
 public class HelpCommand extends DRECommand {
 
@@ -17,7 +20,7 @@ public class HelpCommand extends DRECommand {
     public HelpCommand() {
         setCommand("help");
         setAliases("h", "?", "main");
-        setHelp("/ds help");
+        setHelp("/ds help [page]");
         setMinArgs(0);
         setMaxArgs(1);
         setPermission("dreships.cmd.help");
@@ -28,6 +31,9 @@ public class HelpCommand extends DRECommand {
     @Override
     public void onExecute(String[] args, CommandSender sender) {
         Set<DRECommand> dCommandSet = plugin.getCommandCache().getCommands();
+        List<DRECommand> sorted = dCommandSet.stream()
+                .sorted(Comparator.comparing(DRECommand::getCommand))
+                .collect(Collectors.toList());
         ArrayList<DRECommand> toSend = new ArrayList<>();
 
         int page = 1;
@@ -37,11 +43,13 @@ public class HelpCommand extends DRECommand {
         int send = 0;
         int max = 0;
         int min = 0;
-        for (DRECommand dCommand : dCommandSet) {
+
+        int perPage = plugin.getShipConfig().getCommandsPerHelpPage();
+        for (DRECommand dCommand : sorted) {
             send++;
-            if (send >= page * 5 - 4 && send <= page * 5) {
-                min = page * 5 - 4;
-                max = page * 5;
+            if (send >= page * perPage - (perPage - 1) && send <= page * perPage) {
+                min = page * perPage - (perPage - 1);
+                max = page * perPage;
                 toSend.add(dCommand);
             }
         }

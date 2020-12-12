@@ -28,11 +28,11 @@ public class InfoCommand extends DRECommand {
         Player player = (Player) commandSender;
         Block target = player.getTargetBlock(8);
         if (target == null || !DREShips.isSign(target)) {
-            MessageUtil.sendMessage(player, ShipMessage.CMD_INFO_NO_SIGN.getMessage());
+            MessageUtil.sendMessage(player, ShipMessage.ERROR_TARGET_NO_SIGN.getMessage());
             return;
         }
         if (!TravelSign.travelSign(target)) {
-            MessageUtil.sendMessage(player, ShipMessage.CMD_INFO_NO_TRAVEL_SIGN.getMessage());
+            MessageUtil.sendMessage(player, ShipMessage.ERROR_TARGET_NO_TRAVEL_SIGN.getMessage());
             return;
         }
         TravelSign sign = new TravelSign((Sign) target.getState());
@@ -41,6 +41,15 @@ public class InfoCommand extends DRECommand {
                 SignManager.simplify(sign.getLocation()),
                 sign.getDestinationName(),
                 SignManager.simplify(sign.getDestination()),
-                String.valueOf(sign.getPrice())));
+                String.valueOf(sign.getPrice()),
+                disabledMessage(sign.isDisabled())));
+    }
+
+    private String disabledMessage(boolean disabled) {
+        if (disabled) {
+            return "&ctrue";
+        } else {
+            return "&afalse";
+        }
     }
 }

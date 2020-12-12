@@ -7,4 +7,6 @@ public class ShipDataTypes {
 
     public static final PersistentDataType<byte[], Location> LOCATION = new LocationDataType();
 
+    public static final PersistentDataType<String, Boolean> BOOLEAN = new BooleanDataType();
+
 }

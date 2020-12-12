@@ -21,7 +21,8 @@ public class ReloadCommand extends DRECommand {
 
     @Override
     public void onExecute(String[] strings, CommandSender commandSender) {
-        plugin.instantiateConfig();
+        plugin.instantiateShipConfig();
+        plugin.getSignConfig().reload();
         ShipMessage.CMD_RELOAD_success.sendMessage(commandSender);
     }
 }

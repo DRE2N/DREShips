@@ -1,11 +1,17 @@
-package de.fyreum.dreships.persistentdata;
+package de.fyreum.dreships.serialization;
 
+import org.jetbrains.annotations.NotNull;
+import org.jetbrains.annotations.Nullable;
+
+import java.io.*;
 import java.nio.ByteBuffer;
 import java.util.ArrayList;
 
 public class Serialization {
 
-    public static byte[] serialize(String[] strings) {
+    // string serialization
+
+    public static byte[] serializeStringArray(String[] strings) {
         ArrayList<Byte> byteList = new ArrayList<>();
         for (String string : strings) {
             int len = string.getBytes().length;
@@ -27,7 +33,7 @@ public class Serialization {
         return result;
     }
 
-    public static String[] deserialize(byte[] bytes) {
+    public static String[] deserializeStringArray(byte[] bytes) {
         ArrayList<String> stringList = new ArrayList<>();
         for (int i = 0; i < bytes.length;) {
             byte[] lenArray = new byte[4];
@@ -44,4 +50,29 @@ public class Serialization {
         return stringList.toArray(new String[0]);
     }
 
+    // java object serialization
+
+    public static byte[] serialize(@NotNull Object object) {
+        try (ByteArrayOutputStream byteArrayOutputStream = new ByteArrayOutputStream()) {
+            ObjectOutputStream objectOutputStream = new ObjectOutputStream(byteArrayOutputStream);
+            objectOutputStream.writeObject(object);
+            objectOutputStream.flush();
+            return byteArrayOutputStream.toByteArray();
+        } catch (IOException i) {
+            i.printStackTrace();
+        }
+        return null;
+    }
+
+    @Nullable
+    public static Object deserialize(@NotNull byte[] bytes) {
+        try {
+            ByteArrayInputStream byteArrayInputStream = new ByteArrayInputStream(bytes);
+            ObjectInput objectInputStream = new ObjectInputStream(byteArrayInputStream);
+            return objectInputStream.readObject();
+        } catch (IOException | ClassNotFoundException i) {
+            i.printStackTrace();
+        }
+        return null;
+    }
 }

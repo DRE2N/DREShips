@@ -1,18 +1,24 @@
 prefix: "&8[&5DREShips&8] &r"
 warn:
   suffocation: "&c&lErstickungsgefahr&r&8: &cZiel ist möglicherweise zugebaut."
+  disabledSign: "&cSchild wurde deaktiviert. Ziel konnte nicht identifiziert werden."
 cmd:
   cacheEmpty: "&cDu hast nicht genug Schilder zwischengespeichert"
+  check:
+    signIsCorrect: "&aKeine Fehler gefunden"
+    signWasNotListed: "&7Das Schild wurde zur Liste hinzugefügt"
+    destinationWasNotListed: "&7Das Ziel wurde zur Liste hinzugefügt"
   create:
     success: "&aErstellung erfolgreich abgeschlossen"
   delete:
     success: "&aDas Schild bei &2&v1 &awurde gelöscht"
     failed: "&7Es wurden keine Schilder gelöscht"
-  help: "&6Siehe die bei /ds help beschriebenen Befehle"
+  disable:
+    success: "&aSchild wurde deaktiviert"
+  enable:
+    success: "&aSchild wurde aktiviert"
   info:
-    travelSign: "&8---------&l[ &bVerbindung&8 &l]&r&8---------\n&c> &3von&8: &6&v1 &7(&v2)\n&a> &3nach&8: &6&v3 &7(&v4)\n&c> &3für&8: &6&v5 Heronen"
-    noSign: "&cEs können nur Schilder Verbindungen beinhalten"
-    noTravelSign: "&7Keine Verbindung gefunden"
+    travelSign: "&8---------&l[ &bVerbindung&8 &l]&r&8---------\n&c> &3von&8: &6&v1 &7(&v2)\n&a> &3nach&8: &6&v3 &7(&v4)\n&c> &3für&8: &6&v5 Heronen\n&a> &3deaktiviert: &7&v6"
   save:
     alreadySign: "&cDieses Schild hat bereits eine Verbindung"
     alreadyCached: "&7Dieses Schild ist schon zwischengespeichert"
@@ -32,7 +38,8 @@ error:
     invalid: "&cPreis ist zu niedrig, zu hoch oder keine Zahl"
   target:
     invalid: "&cKein Block gefunden"
-    noSign: "&cBlock ist kein Schild"
+    noSign: "&cEs können nur Schilder Verbindungen beinhalten"
+    noTravelSign: "&7Keine Verbindung gefunden"
   break:
     denied: "&cBitte lass dieses Schild in Frieden"
   missingArguments: "&cZu wenig Argumente, du musst mich schon überzeugen!"

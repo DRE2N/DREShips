@@ -1,19 +1,21 @@
 package de.fyreum.dreships.persistentdata;
 
+import de.fyreum.dreships.serialization.Serialization;
 import org.bukkit.Bukkit;
 import org.bukkit.Location;
 import org.bukkit.persistence.PersistentDataAdapterContext;
 import org.bukkit.persistence.PersistentDataType;
+import org.jetbrains.annotations.NotNull;
 
 public class LocationDataType implements PersistentDataType<byte[], Location> {
 
     @Override
-    public Class<byte[]> getPrimitiveType() {
+    public @NotNull Class<byte[]> getPrimitiveType() {
         return byte[].class;
     }
 
     @Override
-    public Class<Location> getComplexType() {
+    public @NotNull Class<Location> getComplexType() {
         return Location.class;
     }
 
@@ -25,9 +27,10 @@ public class LocationDataType implements PersistentDataType<byte[], Location> {
     - [4] yaw
     - [5] pitch
      */
+    @NotNull
     @Override
-    public byte[] toPrimitive(Location location,PersistentDataAdapterContext context) {
-        return Serialization.serialize(new String[]{
+    public byte[] toPrimitive(Location location, @NotNull PersistentDataAdapterContext context) {
+        return Serialization.serializeStringArray(new String[]{
                 location.getWorld().getName(),
                 String.valueOf(location.getX()),
                 String.valueOf(location.getY()),
@@ -36,9 +39,10 @@ public class LocationDataType implements PersistentDataType<byte[], Location> {
                 String.valueOf(location.getPitch())});
     }
 
+    @NotNull
     @Override
-    public Location fromPrimitive(byte[] primitive, PersistentDataAdapterContext context) {
-        String[] stringArray = Serialization.deserialize(primitive);
+    public Location fromPrimitive(byte @NotNull [] primitive, @NotNull PersistentDataAdapterContext context) {
+        String[] stringArray = Serialization.deserializeStringArray(primitive);
         return new Location(
                 Bukkit.getWorld(stringArray[0]),
                 Double.parseDouble(stringArray[1]),

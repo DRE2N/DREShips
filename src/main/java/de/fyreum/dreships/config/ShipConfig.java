@@ -9,12 +9,14 @@ public class ShipConfig extends DREConfig  {
     public static final int CONFIG_VERSION = 1;
 
     private String language = "german";
-    private double airshipDistanceMultiplier = 0.025;
-    private double landDistanceMultiplier = 0.03;
+    private double airshipDistanceMultiplier = 0.05;
+    private double landDistanceMultiplier = 0.01;
     private double shipDistanceMultiplier = 0.03;
     private double startPrice = 10.00;
     private double taxMultiplier = 0.05;
     private long whitelistedTeleportationTime = 100;
+    private int commandsPerHelpPage = 5;
+    private int signsPerListPage = 7;
 
     public ShipConfig(File file) {
         super(file, CONFIG_VERSION);
@@ -52,6 +54,14 @@ public class ShipConfig extends DREConfig  {
         return whitelistedTeleportationTime;
     }
 
+    public int getCommandsPerHelpPage() {
+        return commandsPerHelpPage;
+    }
+
+    public int getSignsPerListPage() {
+        return signsPerListPage;
+    }
+
     @Override
     public void initialize() {
         if (!config.contains("language")) {
@@ -75,6 +85,12 @@ public class ShipConfig extends DREConfig  {
         if (!config.contains("whitelistedTeleportationTime")) {
             config.set("whitelistedTeleportationTime", whitelistedTeleportationTime);
         }
+        if (!config.contains("commandsPerHelpPage")) {
+            config.set("commandsPerHelpPage", commandsPerHelpPage);
+        }
+        if (!config.contains("signsPerListPage")) {
+            config.set("signsPerListPage", signsPerListPage);
+        }
         save();
     }
 
@@ -87,6 +103,8 @@ public class ShipConfig extends DREConfig  {
         config.set("startPrice", startPrice);
         config.set("taxMultiplier", taxMultiplier);
         config.set("whitelistedTeleportationTime", whitelistedTeleportationTime);
+        config.set("commandsPerHelpPage", commandsPerHelpPage);
+        config.set("signsPerListPage", signsPerListPage);
         super.save();
     }
 
@@ -99,5 +117,7 @@ public class ShipConfig extends DREConfig  {
         startPrice = config.getDouble("startPrice");
         taxMultiplier = config.getDouble("taxMultiplier");
         whitelistedTeleportationTime = config.getLong("whitelistedTeleportationTime");
+        commandsPerHelpPage = config.getInt("commandsPerHelpPage") == 0 ? commandsPerHelpPage : config.getInt("commandsPerHelpPage");
+        signsPerListPage = config.getInt("signsPerListPage") == 0 ? signsPerListPage : config.getInt("signsPerListPage");
     }
 }

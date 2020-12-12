@@ -6,19 +6,18 @@ import org.bukkit.event.HandlerList;
 import org.bukkit.event.player.PlayerEvent;
 import org.jetbrains.annotations.NotNull;
 
-public class TeleportationPreparationEvent extends PlayerEvent implements Cancellable, Skippable {
+public class TravelSignTeleportationPreparationEvent extends PlayerEvent implements Cancellable, Skippable {
 
-    private final HandlerList handlerList;
+    private static final HandlerList handlers = new HandlerList();
     private boolean cancelled = false;
     private boolean skipped;
 
-    public TeleportationPreparationEvent(@NotNull Player player) {
+    public TravelSignTeleportationPreparationEvent(@NotNull Player player) {
         this(player, false);
     }
 
-    public TeleportationPreparationEvent(@NotNull Player player, boolean skipped) {
+    public TravelSignTeleportationPreparationEvent(@NotNull Player player, boolean skipped) {
         super(player);
-        this.handlerList = new HandlerList();
         this.skipped = skipped;
     }
 
@@ -44,7 +43,10 @@ public class TeleportationPreparationEvent extends PlayerEvent implements Cancel
 
     @Override
     public @NotNull HandlerList getHandlers() {
-        return handlerList;
+        return handlers;
     }
 
+    public static HandlerList getHandlerList() {
+        return handlers;
+    }
 }

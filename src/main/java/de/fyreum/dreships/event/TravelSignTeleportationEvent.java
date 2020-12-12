@@ -7,23 +7,17 @@ import org.bukkit.event.HandlerList;
 import org.bukkit.event.player.PlayerEvent;
 import org.jetbrains.annotations.NotNull;
 
-public class ShipTeleportationEvent extends PlayerEvent implements Cancellable {
+public class TravelSignTeleportationEvent extends PlayerEvent implements Cancellable {
 
-    private final HandlerList handlerList;
+    private static final HandlerList handlers = new HandlerList();
     private final Location from;
     private Location to;
     private boolean cancelled = false;
 
-    public ShipTeleportationEvent(@NotNull Player player, Location from, Location to) {
+    public TravelSignTeleportationEvent(@NotNull Player player, Location from, Location to) {
         super(player);
-        this.handlerList = new HandlerList();
         this.from = from;
         this.to = to;
-    }
-
-    @Override
-    public @NotNull HandlerList getHandlers() {
-        return handlerList;
     }
 
     public Location getLocation() {
@@ -46,5 +40,14 @@ public class ShipTeleportationEvent extends PlayerEvent implements Cancellable {
     @Override
     public void setCancelled(boolean b) {
         this.cancelled = b;
+    }
+
+    @Override
+    public @NotNull HandlerList getHandlers() {
+        return handlers;
+    }
+
+    public static HandlerList getHandlerList() {
+        return handlers;
     }
 }

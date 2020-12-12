@@ -7,7 +7,8 @@ import de.erethon.commons.javaplugin.DREPluginSettings;
 import de.erethon.factionsxl.FactionsXL;
 import de.fyreum.dreships.commands.ShipCommandCache;
 import de.fyreum.dreships.config.ShipConfig;
-import de.fyreum.dreships.function.TeleportationUtil;
+import de.fyreum.dreships.config.SignConfig;
+import de.fyreum.dreships.util.TeleportationUtil;
 import de.fyreum.dreships.sign.SignListener;
 import de.fyreum.dreships.sign.SignManager;
 import net.milkbowl.vault.economy.Economy;
@@ -15,6 +16,7 @@ import org.bukkit.Bukkit;
 import org.bukkit.Material;
 import org.bukkit.NamespacedKey;
 import org.bukkit.block.Block;
+import org.jetbrains.annotations.Nullable;
 
 import java.io.File;
 import java.util.Arrays;
@@ -30,6 +32,7 @@ public final class DREShips extends DREPlugin {
     private TeleportationUtil teleportationUtil;
     private ShipCommandCache commandCache;
     private FactionsXL factionsXL = null;
+    private SignConfig signConfig;
 
     private static final Set<Material> SIGNS = new HashSet<>(Arrays.asList(
             Material.OAK_SIGN,
@@ -63,11 +66,12 @@ public final class DREShips extends DREPlugin {
         super.onEnable();
         // instantiation
         plugin = this;
-        this.instantiateConfig();
+        this.instantiateShipConfig();
+        this.instantiateSignConfig();
         economy = getEconomyProvider();
         signManager = new SignManager();
-        teleportationUtil = new TeleportationUtil(this);
-        commandCache = new ShipCommandCache(this);
+        teleportationUtil = new TeleportationUtil(plugin);
+        commandCache = new ShipCommandCache(plugin);
         // fxl integration
         if (Bukkit.getPluginManager().isPluginEnabled("FactionsXL") && Bukkit.getPluginManager().getPlugin("FactionsXL") != null) {
             factionsXL = (FactionsXL) Bukkit.getPluginManager().getPlugin("FactionsXL");
@@ -77,26 +81,28 @@ public final class DREShips extends DREPlugin {
         }
         // setup
         this.setCommandCache(commandCache);
-        commandCache.register(this);
-        this.getCommand("dreships").setTabCompleter(commandCache);
+        commandCache.register(plugin);
+        this.getCommand(ShipCommandCache.LABEL).setTabCompleter(commandCache);
         this.getServer().getPluginManager().registerEvents(new SignListener(), getInstance());
         this.attemptToSaveResource("languages/german.yml", false);
-        this.getMessageHandler().setDefaultLanguage("german");
+        this.getMessageHandler().setDefaultLanguage(shipConfig.getLanguage());
     }
 
-    public void instantiateConfig() {
+    @Override
+    public void onDisable() {
+        super.onDisable();
+        this.signConfig.save();
+    }
+
+    public void instantiateShipConfig() {
         shipConfig = new ShipConfig(new File(getDataFolder(), "config.yml"));
     }
 
+    public void instantiateSignConfig() {
+        signConfig = new SignConfig(plugin);
+    }
+
     /* getter */
-
-    public static DREShips getInstance() {
-        return plugin;
-    }
-
-    public static NamespacedKey getNamespace(String key) {
-        return new NamespacedKey(plugin, key);
-    }
 
     public Economy getEconomy() {
         return economy;
@@ -119,8 +125,21 @@ public final class DREShips extends DREPlugin {
         return shipConfig;
     }
 
+    public SignConfig getSignConfig() {
+        return signConfig;
+    }
+
+    @Nullable
     public FactionsXL getFactionsXL() {
         return factionsXL;
+    }
+
+    public static DREShips getInstance() {
+        return plugin;
+    }
+
+    public static NamespacedKey getNamespace(String key) {
+        return new NamespacedKey(plugin, key);
     }
 
     public static boolean isSign(Block block) {

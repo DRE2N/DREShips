@@ -3,10 +3,13 @@ package de.fyreum.dreships.sign;
 import de.erethon.commons.chat.MessageUtil;
 import de.fyreum.dreships.DREShips;
 import de.fyreum.dreships.config.ShipMessage;
-import de.fyreum.dreships.function.PriceCalculation;
+import de.fyreum.dreships.event.TravelSignCreateEvent;
+import de.fyreum.dreships.event.TravelSignSignDeleteEvent;
+import de.fyreum.dreships.util.PriceCalculationUtil;
 import de.fyreum.dreships.persistentdata.ShipDataTypes;
 import de.fyreum.dreships.sign.cache.CacheSignException;
 import de.fyreum.dreships.sign.cache.PlayerCache;
+import org.bukkit.ChatColor;
 import org.bukkit.Location;
 import org.bukkit.block.Block;
 import org.bukkit.block.Sign;
@@ -20,11 +23,11 @@ import java.util.UUID;
 public class SignManager {
 
     private final PlayerCache playerCache;
-    private final PriceCalculation priceCalculation;
+    private final PriceCalculationUtil priceCalculation;
 
     public SignManager() {
         this.playerCache = new PlayerCache();
-        this.priceCalculation = new PriceCalculation();
+        this.priceCalculation = new PriceCalculationUtil();
     }
 
     // ----------TravelSign---------
@@ -64,6 +67,8 @@ public class SignManager {
     private void loadAndCreate(@NotNull CommandSender sender, @NotNull Sign sign, @NotNull Sign destination, String name, String destinationName, int price) {
         this.savePersistentData(sign, destination.getLocation(), name, destinationName, price);
         this.visualizeData(sign, name, destinationName, price);
+
+        new TravelSignCreateEvent(new TravelSign(name, destinationName, sign.getLocation(), destination.getLocation(), price)).callEvent();
         MessageUtil.sendMessage(sender, ShipMessage.CMD_CREATE_SUCCESS.getMessage(simplify(sign.getLocation())));
         /*  // failed performance friendly concept (Sign changes won't save)
         BukkitRunnable runnable = new BukkitRunnable() {
@@ -118,8 +123,12 @@ public class SignManager {
         if (sign == null) {
             return 0;
         }
+        TravelSign travelSign = new TravelSign(sign);
+
         this.deletePersistentData(sign);
         this.clearLines(sign);
+
+        new TravelSignSignDeleteEvent(travelSign).callEvent();
         MessageUtil.sendMessage(sender, ShipMessage.CMD_DELETE_SUCCESS.getMessage(simplify(sign.getLocation())));
         return 1;
         /* // failed performance friendly concept (Sign changes won't save)
@@ -154,6 +163,7 @@ public class SignManager {
         sign.getPersistentDataContainer().remove(TravelSign.getDestinationNameKey());
         sign.getPersistentDataContainer().remove(TravelSign.getDestinationKey());
         sign.getPersistentDataContainer().remove(TravelSign.getPriceKey());
+        sign.getPersistentDataContainer().remove(TravelSign.getDisabledKey());
         sign.update(true);
     }
 
@@ -168,6 +178,59 @@ public class SignManager {
         sign.update(true);
     }
 
+    public void disable(@NotNull TravelSign travelSign) {
+        if (travelSign.getSign() != null) {
+            this.disable(travelSign.getSign());
+        }
+        if (DREShips.isSign(travelSign.getDestination().getBlock())) {
+            this.disable((Sign) travelSign.getDestination().getBlock().getState());
+        }
+    }
+
+    public void disable(@NotNull Sign sign) {
+        this.visualizeDisable(sign);
+        this.addDisabledPersistentData(sign);
+    }
+
+    private void visualizeDisable(@Nullable Sign sign) {
+        if (sign == null) {
+            return;
+        }
+        sign.setLine(0, ChatColor.translateAlternateColorCodes('&', "&4###############"));
+        sign.setLine(1, ChatColor.translateAlternateColorCodes('&', "&cDisabled"));
+        sign.setLine(2, ChatColor.translateAlternateColorCodes('&', "&cContact Admin"));
+        sign.setLine(3, ChatColor.translateAlternateColorCodes('&', "&4###############"));
+        sign.update(true);
+    }
+
+    private void addDisabledPersistentData(@Nullable Sign sign) {
+        if (sign == null) {
+            return;
+        }
+        sign.getPersistentDataContainer().set(DREShips.getNamespace("disabled"), ShipDataTypes.BOOLEAN, true);
+        sign.update(true);
+    }
+
+    public void enable(@NotNull TravelSign travelSign) {
+        if (travelSign.getSign() != null) {
+            this.enable(travelSign.getSign());
+        }
+        if (DREShips.isSign(travelSign.getDestination().getBlock())) {
+            this.enable((Sign) travelSign.getDestination().getBlock().getState());
+        }
+    }
+
+    public void enable(@NotNull Sign sign) {
+        TravelSign travelSign = new TravelSign(sign);
+        this.visualizeData(sign, travelSign.getName(), travelSign.getDestinationName(), travelSign.getPrice());
+        this.removeDisabledPersistentData(sign);
+    }
+
+    private void removeDisabledPersistentData(Sign sign) {
+        sign.getPersistentDataContainer().remove(TravelSign.getDisabledKey());
+        sign.update(true);
+    }
+
     /* getter */
 
     public static String simplify(Location location) {
@@ -178,7 +241,7 @@ public class SignManager {
         return playerCache;
     }
 
-    public PriceCalculation getPriceCalculation() {
+    public PriceCalculationUtil getPriceCalculation() {
         return priceCalculation;
     }
 }

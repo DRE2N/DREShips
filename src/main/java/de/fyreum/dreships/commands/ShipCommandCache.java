@@ -3,10 +3,11 @@ package de.fyreum.dreships.commands;
 import de.erethon.commons.command.DRECommand;
 import de.erethon.commons.command.DRECommandCache;
 import de.erethon.commons.javaplugin.DREPlugin;
-import de.fyreum.dreships.function.PriceCalculation;
+import de.fyreum.dreships.util.PriceCalculationUtil;
 import org.bukkit.command.Command;
 import org.bukkit.command.CommandSender;
 import org.bukkit.command.TabCompleter;
+import org.jetbrains.annotations.NotNull;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -23,6 +24,10 @@ public class ShipCommandCache extends DRECommandCache implements TabCompleter {
     public TeleportCommand teleportCommand = new TeleportCommand();
     public HelpCommand helpCommand = new HelpCommand();
     public ReloadCommand reloadCommand = new ReloadCommand();
+    public ListCommand listCommand = new ListCommand();
+    public CheckCommand checkCommand = new CheckCommand();
+    public DisableCommand disableCommand = new DisableCommand();
+    public EnableCommand enableCommand = new EnableCommand();
 
     public ShipCommandCache(DREPlugin plugin) {
         super(LABEL, plugin);
@@ -35,10 +40,14 @@ public class ShipCommandCache extends DRECommandCache implements TabCompleter {
         addCommand(teleportCommand);
         addCommand(helpCommand);
         addCommand(reloadCommand);
+        addCommand(listCommand);
+        addCommand(checkCommand);
+        addCommand(disableCommand);
+        addCommand(enableCommand);
     }
 
     @Override
-    public List<String> onTabComplete(CommandSender sender, Command command, String alias, String[] args) {
+    public List<String> onTabComplete(@NotNull CommandSender sender, @NotNull Command command, @NotNull String alias, String[] args) {
         List<String> cmds = new ArrayList<>();
         for (DRECommand cmd : getCommands()) {
             if (cmd.getPermission() != null && !cmd.getPermission().isEmpty() && sender.hasPermission(cmd.getPermission())) {
@@ -55,7 +64,7 @@ public class ShipCommandCache extends DRECommandCache implements TabCompleter {
         }
         if (args.length == 2) {
             if (createCommand.getCommand().equalsIgnoreCase(args[0]) || createCommand.getAliases().contains(args[0])) {
-                for(String string : PriceCalculation.getTravelTypes()) {
+                for(String string : PriceCalculationUtil.getTravelTypes()) {
                     if(string.toLowerCase().startsWith(args[1].toLowerCase())) completes.add(string);
                 }
                 return completes;
