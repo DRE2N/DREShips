@@ -46,7 +46,7 @@ public class SignListener implements Listener {
             return;
         }
         if (!teleportationUtil.isTeleporting(event.getPlayer())) {
-            teleportationUtil.teleport(event.getPlayer(), travelSign, false);
+            teleportationUtil.teleport(event.getPlayer(), travelSign);
         }
     }
 

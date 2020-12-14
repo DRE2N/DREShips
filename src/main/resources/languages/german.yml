@@ -4,6 +4,9 @@ warn:
   disabledSign: "&cSchild wurde deaktiviert. Ziel konnte nicht identifiziert werden."
 cmd:
   cacheEmpty: "&cDu hast nicht genug Schilder zwischengespeichert"
+  calculate:
+    multiplierInvalid: "&cDer angegebene Multiplikator konnte nicht identifiziert werden."
+    success: "&7Entfernung: &9&v1\n&7Preis: &9&v2"
   check:
     signIsCorrect: "&aKeine Fehler gefunden"
     signWasNotListed: "&7Das Schild wurde zur Liste hinzugefügt"

@@ -33,7 +33,7 @@ public class CreateCommand extends DRECommand {
             return;
         }
         try {
-            double multipliedDistance = signManager.getPriceCalculation().getDistanceMultiplier(args[1]);
+            double multipliedDistance = plugin.getPriceCalculationUtil().getDistanceMultiplier(args[1]);
             if (multipliedDistance < 0) {
                 int price;
                 try {

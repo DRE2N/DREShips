@@ -28,6 +28,7 @@ public class ShipCommandCache extends DRECommandCache implements TabCompleter {
     public CheckCommand checkCommand = new CheckCommand();
     public DisableCommand disableCommand = new DisableCommand();
     public EnableCommand enableCommand = new EnableCommand();
+    public CalculateCommand calculateCommand = new CalculateCommand();
 
     public ShipCommandCache(DREPlugin plugin) {
         super(LABEL, plugin);
@@ -44,6 +45,7 @@ public class ShipCommandCache extends DRECommandCache implements TabCompleter {
         addCommand(checkCommand);
         addCommand(disableCommand);
         addCommand(enableCommand);
+        addCommand(calculateCommand);
     }
 
     @Override
@@ -64,6 +66,12 @@ public class ShipCommandCache extends DRECommandCache implements TabCompleter {
         }
         if (args.length == 2) {
             if (createCommand.getCommand().equalsIgnoreCase(args[0]) || createCommand.getAliases().contains(args[0])) {
+                for(String string : PriceCalculationUtil.getTravelTypes()) {
+                    if(string.toLowerCase().startsWith(args[1].toLowerCase())) completes.add(string);
+                }
+                return completes;
+            }
+            if (calculateCommand.getCommand().equalsIgnoreCase(args[0])) {
                 for(String string : PriceCalculationUtil.getTravelTypes()) {
                     if(string.toLowerCase().startsWith(args[1].toLowerCase())) completes.add(string);
                 }

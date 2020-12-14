@@ -55,7 +55,7 @@ public class TeleportationUtil {
             return;
         }
         if (!ignoreWarnings && unsafeDestination(travelSign.getDestination())) {
-            whitelistPlayer(player.getUniqueId());
+            whitelistPlayerDeleteCommand(player.getUniqueId());
             ShipMessage.WARN_SUFFOCATION.sendMessage(player);
             player.sendMessage(teleportMessage(travelSign.getLocation()));
             return;
@@ -75,7 +75,7 @@ public class TeleportationUtil {
             if (preparationEvent.isSkipped()) {
                 TravelSignTeleportationEvent teleportationEvent = new TravelSignTeleportationEvent(player, player.getLocation(), destination);
                 if (teleportationEvent.callEvent()) {
-                    this.teleportPlayer(player, teleportationEvent.getDestination(), price, message);
+                    this.teleport(player, teleportationEvent.getDestination(), price, message);
                 }
                 return;
             }
@@ -83,7 +83,7 @@ public class TeleportationUtil {
         }
     }
 
-    private void teleportPlayer(Player player, Location destination, double price, String message) {
+    private void teleport(Player player, Location destination, double price, String message) {
         if (economy != null) {
             economy.withdrawPlayer(player, price);
             if (factionsXL != null) {
@@ -110,12 +110,12 @@ public class TeleportationUtil {
         MessageUtil.sendActionBarMessage(player, message);
     }
 
-    private void whitelistPlayer(UUID uuid) {
+    private void whitelistPlayerDeleteCommand(UUID uuid) {
         commandWhitelist.add(uuid);
         Bukkit.getScheduler().runTaskLater(plugin, () -> commandWhitelist.remove(uuid), plugin.getShipConfig().getWhitelistedTeleportationTime());
     }
 
-    private String multipliedString(int multiply) {
+    private String multipliedCooldownString(int multiply) {
         StringBuilder stringBuilder = new StringBuilder();
         for (int i = 0; i < multiply; i++) {
             stringBuilder.append("█");
@@ -179,12 +179,12 @@ public class TeleportationUtil {
                 public void run() {
                     if (player.getLocation().getBlockX() == location.getBlockX() && player.getLocation().getBlockY() ==
                             location.getBlockY() && player.getLocation().getBlockZ() == location.getBlockZ()) {
-                        player.sendActionBar(ChatColor.GREEN + multipliedString(repeats) + ChatColor.DARK_RED + multipliedString(10 - repeats));
+                        player.sendActionBar(ChatColor.GREEN + multipliedCooldownString(repeats) + ChatColor.DARK_RED + multipliedCooldownString(10 - repeats));
                         if (repeats == 10) {
                             TravelSignTeleportationEvent teleportationEvent = new TravelSignTeleportationEvent(player, player.getLocation(), destination);
 
                             if (teleportationEvent.callEvent()) {
-                                teleportPlayer(player, teleportationEvent.getDestination(), price, message);
+                                teleport(player, teleportationEvent.getDestination(), price, message);
                             }
                             currentlyTeleporting.remove(player.getUniqueId());
                             cancel();

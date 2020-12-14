@@ -13,6 +13,8 @@ public enum ShipMessage implements Message {
     WARN_SUFFOCATION("warn.suffocation"),
     WARN_DISABLED_SIGN("warn.disabledSign"),
     CMD_CACHE_EMPTY("cmd.cacheEmpty"),
+    CMD_CALCULATE_MULTIPLIER_INVALID("cmd.calculate.multiplierInvalid"),
+    CMD_CALCULATE_SUCCESS("cmd.calculate.success"),
     CMD_CHECK_SIGN_IS_CORRECT("cmd.check.signIsCorrect"),
     CMD_CHECK_SIGN_WAS_NOT_LISTED("cmd.check.signWasNotListed"),
     CMD_CHECK_DESTINATION_WAS_NOT_LISTED("cmd.check.destinationWasNotListed"),

@@ -15,7 +15,6 @@ import org.bukkit.entity.Player;
 public class SaveCommand extends DRECommand {
 
     DREShips plugin = DREShips.getInstance();
-    SignManager signManager = plugin.getSignManager();
 
     public SaveCommand() {
         setCommand("save");
@@ -51,7 +50,7 @@ public class SaveCommand extends DRECommand {
             MessageUtil.sendMessage(player, ShipMessage.ERROR_TARGET_NO_SIGN.getMessage());
             return;
         }
-        signManager.getPlayerCache().save(player.getUniqueId(), new CacheSign(sign, args[1]));
+        plugin.getPlayerCache().save(player.getUniqueId(), new CacheSign(sign, args[1]));
         ShipMessage.CMD_SAVE_SUCCESS.sendMessage(player);
     }
 }

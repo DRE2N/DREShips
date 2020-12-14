@@ -10,6 +10,8 @@ import de.fyreum.dreships.config.ShipConfig;
 import de.fyreum.dreships.config.SignConfig;
 import de.fyreum.dreships.sign.SignListener;
 import de.fyreum.dreships.sign.SignManager;
+import de.fyreum.dreships.sign.cache.PlayerCache;
+import de.fyreum.dreships.util.PriceCalculationUtil;
 import de.fyreum.dreships.util.TeleportationUtil;
 import net.milkbowl.vault.economy.Economy;
 import org.bukkit.Bukkit;
@@ -28,6 +30,8 @@ public final class DREShips extends DREPlugin {
     private static DREShips plugin;
     private Economy economy = null;
     private ShipConfig shipConfig;
+    private PlayerCache playerCache;
+    private PriceCalculationUtil priceCalculation;
     private SignManager signManager;
     private TeleportationUtil teleportationUtil;
     private ShipCommandCache commandCache;
@@ -69,6 +73,8 @@ public final class DREShips extends DREPlugin {
         this.instantiateShipConfig();
         this.instantiateSignConfig();
         economy = getEconomyProvider();
+        playerCache = new PlayerCache();
+        priceCalculation = new PriceCalculationUtil();
         signManager = new SignManager();
         teleportationUtil = new TeleportationUtil(plugin);
         commandCache = new ShipCommandCache(plugin);
@@ -106,6 +112,14 @@ public final class DREShips extends DREPlugin {
 
     public Economy getEconomy() {
         return economy;
+    }
+
+    public PlayerCache getPlayerCache() {
+        return playerCache;
+    }
+
+    public PriceCalculationUtil getPriceCalculationUtil() {
+        return priceCalculation;
     }
 
     public SignManager getSignManager() {

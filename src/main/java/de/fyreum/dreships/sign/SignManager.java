@@ -22,12 +22,13 @@ import java.util.UUID;
 
 public class SignManager {
 
-    private final PlayerCache playerCache;
-    private final PriceCalculationUtil priceCalculation;
+    private final DREShips plugin= DREShips.getInstance();
+
+    PlayerCache playerCache = plugin.getPlayerCache();
+    PriceCalculationUtil priceCalculation = plugin.getPriceCalculationUtil();
 
     public SignManager() {
-        this.playerCache = new PlayerCache();
-        this.priceCalculation = new PriceCalculationUtil();
+
     }
 
     // ----------TravelSign---------
@@ -235,13 +236,5 @@ public class SignManager {
 
     public static String simplify(Location location) {
         return "[x=" + location.getX() + ", y=" + location.getY() + ", z=" + location.getZ() + "]";
-    }
-
-    public PlayerCache getPlayerCache() {
-        return playerCache;
-    }
-
-    public PriceCalculationUtil getPriceCalculation() {
-        return priceCalculation;
     }
 }
