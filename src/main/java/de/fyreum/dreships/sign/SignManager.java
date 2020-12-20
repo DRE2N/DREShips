@@ -124,7 +124,12 @@ public class SignManager {
         if (sign == null) {
             return 0;
         }
-        TravelSign travelSign = new TravelSign(sign);
+        TravelSign travelSign;
+        try {
+            travelSign = new TravelSign(sign);
+        } catch (CacheSignException c) {
+            return 0;
+        }
 
         this.deletePersistentData(sign);
         this.clearLines(sign);
