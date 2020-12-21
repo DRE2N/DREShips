@@ -74,6 +74,13 @@ public final class DREShips extends DREPlugin {
     @Override
     public void onEnable() {
         super.onEnable();
+        // fxl integration
+        if (Bukkit.getPluginManager().isPluginEnabled("FactionsXL") && Bukkit.getPluginManager().getPlugin("FactionsXL") != null) {
+            factionsXL = (FactionsXL) Bukkit.getPluginManager().getPlugin("FactionsXL");
+            MessageUtil.log("&aSuccessfully found FactionsXL on the server!");
+        } else {
+            MessageUtil.log("&4Couldn't find FactionsXL on the server -> some features may not work");
+        }
         // instantiation
         plugin = this;
         this.instantiateShipConfig();
@@ -84,13 +91,6 @@ public final class DREShips extends DREPlugin {
         signManager = new SignManager();
         teleportationUtil = new TeleportationUtil(plugin);
         commandCache = new ShipCommandCache(plugin);
-        // fxl integration
-        if (Bukkit.getPluginManager().isPluginEnabled("FactionsXL") && Bukkit.getPluginManager().getPlugin("FactionsXL") != null) {
-            factionsXL = (FactionsXL) Bukkit.getPluginManager().getPlugin("FactionsXL");
-            MessageUtil.log("&aSuccessfully found FactionsXL on the server!");
-        } else {
-            MessageUtil.log("&4Couldn't find FactionsXL on the server -> some features may not work");
-        }
         // setup
         this.setCommandCache(commandCache);
         commandCache.register(plugin);

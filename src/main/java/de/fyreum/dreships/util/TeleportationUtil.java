@@ -29,7 +29,6 @@ public class TeleportationUtil {
 
     private final DREShips plugin;
     private final Economy economy;
-    private final FactionsXL factionsXL;
     private final List<UUID> currentlyTeleporting;
     private static final String commandVerifier = UUID.randomUUID().toString();
     private static final Set<UUID> commandWhitelist = new HashSet<>();
@@ -37,7 +36,6 @@ public class TeleportationUtil {
     public TeleportationUtil(DREShips plugin) {
         this.plugin = plugin;
         this.economy = plugin.getEconomy();
-        this.factionsXL = plugin.getFactionsXL();
         this.currentlyTeleporting = new ArrayList<>();
     }
 
@@ -86,8 +84,8 @@ public class TeleportationUtil {
     private void teleport(Player player, Location destination, double price, String message) {
         if (economy != null) {
             economy.withdrawPlayer(player, price);
-            if (factionsXL != null) {
-                Faction faction = factionsXL.getFactionCache().getByChunk(player.getChunk());
+            if (plugin.getFactionsXL() != null) {
+                Faction faction = plugin.getFactionsXL().getFactionCache().getByChunk(player.getChunk());
                 if (faction != null) {
                     double tax = price*plugin.getShipConfig().getTaxMultiplier();
                     faction.getAccount().deposit(tax);
