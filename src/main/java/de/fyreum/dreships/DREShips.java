@@ -17,7 +17,6 @@ import de.fyreum.dreships.util.TeleportationUtil;
 import net.milkbowl.vault.economy.Economy;
 import org.bukkit.Bukkit;
 import org.bukkit.Location;
-import org.bukkit.Material;
 import org.bukkit.NamespacedKey;
 import org.bukkit.block.Block;
 import org.bukkit.block.BlockFace;
@@ -26,10 +25,9 @@ import org.bukkit.block.data.type.WallSign;
 import org.jetbrains.annotations.Nullable;
 
 import java.io.File;
-import java.util.Arrays;
-import java.util.HashSet;
-import java.util.List;
-import java.util.Set;
+
+import static org.bukkit.block.BlockFace.*;
+import static org.bukkit.block.BlockFace.SOUTH;
 
 public final class DREShips extends DREPlugin {
 
@@ -43,25 +41,6 @@ public final class DREShips extends DREPlugin {
     private ShipCommandCache commandCache;
     private FactionsXL factionsXL = null;
     private SignConfig signConfig;
-
-    private static final Set<Material> SIGNS = new HashSet<>(Arrays.asList(
-            Material.OAK_SIGN,
-            Material.OAK_WALL_SIGN,
-            Material.SPRUCE_SIGN,
-            Material.SPRUCE_WALL_SIGN,
-            Material.BIRCH_SIGN,
-            Material.BIRCH_WALL_SIGN,
-            Material.JUNGLE_SIGN,
-            Material.JUNGLE_WALL_SIGN,
-            Material.ACACIA_SIGN,
-            Material.ACACIA_WALL_SIGN,
-            Material.DARK_OAK_SIGN,
-            Material.DARK_OAK_WALL_SIGN,
-            Material.CRIMSON_SIGN,
-            Material.CRIMSON_WALL_SIGN,
-            Material.WARPED_SIGN,
-            Material.WARPED_WALL_SIGN
-    ));
 
     public DREShips() {
         settings = DREPluginSettings.builder()
@@ -163,47 +142,34 @@ public final class DREShips extends DREPlugin {
     }
 
     public static boolean isSign(Block block) {
-        return SIGNS.contains(block.getType());
+        return block.getState() instanceof Sign;
     }
 
-    private static class LocationNode {
-        private final Location loc;
-        private final BlockFace face;
-
-        public LocationNode(Location loc, BlockFace face) {
-            this.loc = loc;
-            this.face = face;
-        }
-
-        public Location getLoc() {
-            return loc;
-        }
-
-        public BlockFace getFace() {
-            return face;
-        }
+    public static boolean isWallSign(Block block) {
+        return block.getBlockData() instanceof WallSign;
     }
 
-    public static boolean signAttachedTo(Block block) {
+    public static boolean isSignAttachedTo(Block block) {
         Location location = block.getLocation();
-        List<LocationNode> locations = Arrays.asList(
-                new LocationNode(location.clone().add(1, 0, 0), BlockFace.EAST), // x -1
-                new LocationNode(location.clone().add(0, 0, 1), BlockFace.NORTH), // z +1
-                new LocationNode(location.clone().subtract(1, 0, 0), BlockFace.WEST), // x -1
-                new LocationNode(location.clone().subtract(0, 0, 1), BlockFace.SOUTH) // z -1
-        );
+        Location[] locations = new Location[]{
+                location.clone().add(1, 0, 0),
+                location.clone().add(0, 0, 1),
+                location.clone().subtract(1, 0, 0),
+                location.clone().subtract(0, 0, 1)
+        };
+        BlockFace[] faces = new BlockFace[]{WEST, NORTH, EAST, SOUTH};
+
         Location locUp = location.clone().add(0, 1, 0);
-        if (locUp.getBlock().getBlockData() instanceof org.bukkit.block.data.type.Sign && TravelSign.travelSign(locUp.getBlock())) {
-            return true;
-        }
-        for (LocationNode loc : locations) {
-            if (!TravelSign.travelSign(loc.getLoc().getBlock())) {
-                continue;
+        if (TravelSign.travelSign(locUp.getBlock())) {
+            if (!isWallSign(locUp.getBlock())) {
+                return true;
             }
-            Sign sign = (Sign) loc.getLoc().getBlock().getState();
-            if (sign.getBlockData() instanceof WallSign) {
-                WallSign wallSign = (WallSign) sign.getBlockData();
-                if (wallSign.getFacing().getOppositeFace().equals(loc.getFace())) {
+        }
+        for (int i = 0; i < locations.length; i++) {
+            Block b = locations[i].getBlock();
+            if (TravelSign.travelSign(b) && isWallSign(b)) {
+                WallSign wallSign = (WallSign) b.getBlockData();
+                if (wallSign.getFacing().getOppositeFace().equals(faces[i])) {
                     return true;
                 }
             }

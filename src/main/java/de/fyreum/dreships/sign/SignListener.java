@@ -6,20 +6,13 @@ import de.fyreum.dreships.config.ShipMessage;
 import de.fyreum.dreships.event.TravelSignCreateEvent;
 import de.fyreum.dreships.event.TravelSignSignDeleteEvent;
 import de.fyreum.dreships.util.TeleportationUtil;
-import org.bukkit.Location;
-import org.bukkit.block.Block;
-import org.bukkit.block.BlockFace;
 import org.bukkit.block.Sign;
-import org.bukkit.block.data.type.WallSign;
 import org.bukkit.event.EventHandler;
 import org.bukkit.event.EventPriority;
 import org.bukkit.event.Listener;
 import org.bukkit.event.block.Action;
 import org.bukkit.event.block.BlockBreakEvent;
 import org.bukkit.event.player.PlayerInteractEvent;
-
-import java.util.Arrays;
-import java.util.List;
 
 public class SignListener implements Listener {
 
@@ -60,7 +53,7 @@ public class SignListener implements Listener {
     @EventHandler(priority = EventPriority.HIGH)
     public void handleSignBreak(BlockBreakEvent event) {
         if (!DREShips.isSign(event.getBlock())) {
-            if (DREShips.signAttachedTo(event.getBlock())) {
+            if (DREShips.isSignAttachedTo(event.getBlock())) {
                 event.setCancelled(true);
                 MessageUtil.sendActionBarMessage(event.getPlayer(), ShipMessage.ERROR_BREAK_DENIED.getMessage());
             }

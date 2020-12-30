@@ -97,7 +97,7 @@
         <dependency>
             <groupId>de.erethon</groupId>
             <artifactId>factionsxl</artifactId>
-            <version>0.11</version>
+            <version>0.11-SNAPSHOT</version>
         </dependency>
         <dependency>
             <groupId>com.github.MilkBowl</groupId>

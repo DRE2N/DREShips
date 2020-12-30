@@ -83,7 +83,7 @@
     <dependency>
       <groupId>de.erethon</groupId>
       <artifactId>factionsxl</artifactId>
-      <version>0.11</version>
+      <version>0.11-SNAPSHOT</version>
       <scope>compile</scope>
     </dependency>
     <dependency>
