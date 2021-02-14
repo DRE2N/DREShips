@@ -6,6 +6,7 @@ import de.fyreum.dreships.event.TravelSignCreateEvent;
 import de.fyreum.dreships.event.TravelSignSignDeleteEvent;
 import de.fyreum.dreships.util.TeleportationUtil;
 import org.bukkit.block.Sign;
+import org.bukkit.entity.Player;
 import org.bukkit.event.EventHandler;
 import org.bukkit.event.EventPriority;
 import org.bukkit.event.Listener;
@@ -20,7 +21,8 @@ public class SignListener implements Listener {
 
     @EventHandler
     public void handleSignInteract(PlayerInteractEvent event) {
-        if (!event.getAction().equals(Action.RIGHT_CLICK_BLOCK) || event.getPlayer().isSneaking()) {
+        Player player = event.getPlayer();
+        if (!event.getAction().equals(Action.RIGHT_CLICK_BLOCK) || player.isSneaking()) {
             return;
         }
         if (event.getClickedBlock() == null) {
@@ -33,6 +35,7 @@ public class SignListener implements Listener {
         TravelSign travelSign;
         try {
             travelSign = new TravelSign(sign);
+            travelSign.updateWorld(player.getWorld());
         } catch (IllegalArgumentException i) {
             return;
         }
@@ -41,13 +44,13 @@ public class SignListener implements Listener {
         }
         if (!TravelSign.travelSign(travelSign.getDestination().getBlock())) {
             plugin.getSignManager().disable(sign);
-            ShipMessage.WARN_DISABLED_SIGN.sendMessage(event.getPlayer());
+            ShipMessage.WARN_DISABLED_SIGN.sendMessage(player);
             return;
         }
         plugin.getSignManager().check(null, travelSign);
 
-        if (!teleportationUtil.isTeleporting(event.getPlayer())) {
-            teleportationUtil.teleport(event.getPlayer(), travelSign);
+        if (!teleportationUtil.isTeleporting(player)) {
+            teleportationUtil.teleport(player, travelSign);
         }
     }
 

@@ -30,6 +30,7 @@ public abstract class TravelSignCommand extends DRECommand {
             return;
         }
         TravelSign travelSign = new TravelSign(sign);
+        travelSign.updateWorld(player.getWorld());
 
         onExecute(travelSign, args, player);
     }

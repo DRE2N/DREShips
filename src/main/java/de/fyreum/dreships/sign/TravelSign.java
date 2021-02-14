@@ -6,8 +6,10 @@ import de.fyreum.dreships.persistentdata.ShipDataTypes;
 import net.milkbowl.vault.economy.Economy;
 import org.bukkit.Location;
 import org.bukkit.NamespacedKey;
+import org.bukkit.World;
 import org.bukkit.block.Block;
 import org.bukkit.block.Sign;
+import org.bukkit.entity.Player;
 import org.bukkit.persistence.PersistentDataContainer;
 import org.bukkit.persistence.PersistentDataType;
 import org.jetbrains.annotations.Nullable;
@@ -107,6 +109,14 @@ public final class TravelSign {
         }
         final TravelSign other = (TravelSign) obj;
         return this.getLocation().equals(other.getLocation());
+    }
+
+    public TravelSign updateWorld(World world) {
+        if (ignoreWorld) {
+            this.location.setWorld(world);
+            this.destination.setWorld(world);
+        }
+        return this;
     }
 
     /* getter and setter */
