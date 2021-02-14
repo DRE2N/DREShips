@@ -29,6 +29,13 @@ public class ShipCommandCache extends DRECommandCache implements TabCompleter {
     public DisableCommand disableCommand = new DisableCommand();
     public EnableCommand enableCommand = new EnableCommand();
     public CalculateCommand calculateCommand = new CalculateCommand();
+    public SetCooldownCommand activateCooldownCommand = new SetCooldownCommand();
+    public MessageCommand messageCommand = new MessageCommand();
+    public RemoveMessageCommand removeMessageCommand = new RemoveMessageCommand();
+    public IgnoreWorldCommand ignoreWorldCommand = new IgnoreWorldCommand();
+    public SpecificWorldCommand specificWorldCommand = new SpecificWorldCommand();
+    public RenameCommand renameCommand = new RenameCommand();
+    public SetPriceCommand setPriceCommand = new SetPriceCommand();
 
     public ShipCommandCache(DREPlugin plugin) {
         super(LABEL, plugin);
@@ -46,6 +53,13 @@ public class ShipCommandCache extends DRECommandCache implements TabCompleter {
         addCommand(disableCommand);
         addCommand(enableCommand);
         addCommand(calculateCommand);
+        addCommand(activateCooldownCommand);
+        addCommand(messageCommand);
+        addCommand(removeMessageCommand);
+        addCommand(ignoreWorldCommand);
+        addCommand(specificWorldCommand);
+        addCommand(renameCommand);
+        addCommand(setPriceCommand);
     }
 
     @Override
@@ -78,6 +92,6 @@ public class ShipCommandCache extends DRECommandCache implements TabCompleter {
                 return completes;
             }
         }
-        return null;
+        return completes;
     }
 }

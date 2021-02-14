@@ -5,21 +5,21 @@ import de.fyreum.dreships.config.ShipMessage;
 import de.fyreum.dreships.sign.TravelSign;
 import org.bukkit.entity.Player;
 
-public class DisableCommand extends TravelSignCommand {
+public class IgnoreWorldCommand extends TravelSignCommand {
 
     DREShips plugin = DREShips.getInstance();
 
-    public DisableCommand() {
-        setCommand("disable");
-        setAliases("dis");
+    public IgnoreWorldCommand() {
+        setCommand("ignoreWorld");
+        setAliases("ignore");
         setMaxArgs(0);
-        setHelp("/ds disable");
-        setPermission("dreships.cmd.disable");
+        setHelp("/ds ignoreWorld");
+        setPermission("dreships.cmd.ignoreWorld");
     }
 
     @Override
     public void onExecute(TravelSign travelSign, String[] args, Player player) {
-        plugin.getSignManager().disable(travelSign);
-        ShipMessage.CMD_DISABLE_SUCCESS.sendMessage(player);
+        plugin.getSignManager().ignoreWorld(travelSign);
+        ShipMessage.CMD_IGNORE_WORLD_SUCCESS.sendMessage(player);
     }
 }

@@ -1,6 +1,5 @@
 package de.fyreum.dreships.sign;
 
-import de.erethon.commons.chat.MessageUtil;
 import de.fyreum.dreships.DREShips;
 import de.fyreum.dreships.config.ShipMessage;
 import de.fyreum.dreships.event.TravelSignCreateEvent;
@@ -45,6 +44,8 @@ public class SignListener implements Listener {
             ShipMessage.WARN_DISABLED_SIGN.sendMessage(event.getPlayer());
             return;
         }
+        plugin.getSignManager().check(null, travelSign);
+
         if (!teleportationUtil.isTeleporting(event.getPlayer())) {
             teleportationUtil.teleport(event.getPlayer(), travelSign);
         }
@@ -55,7 +56,7 @@ public class SignListener implements Listener {
         if (!DREShips.isSign(event.getBlock())) {
             if (DREShips.isSignAttachedTo(event.getBlock())) {
                 event.setCancelled(true);
-                MessageUtil.sendActionBarMessage(event.getPlayer(), ShipMessage.ERROR_BREAK_DENIED.getMessage());
+                ShipMessage.ERROR_BREAK_DENIED.sendActionBar(event.getPlayer());
             }
             return;
         }
@@ -64,7 +65,7 @@ public class SignListener implements Listener {
             return;
         }
         event.setCancelled(true);
-        MessageUtil.sendActionBarMessage(event.getPlayer(), ShipMessage.ERROR_BREAK_DENIED.getMessage());
+        ShipMessage.ERROR_BREAK_DENIED.sendActionBar(event.getPlayer());
     }
 
     @EventHandler

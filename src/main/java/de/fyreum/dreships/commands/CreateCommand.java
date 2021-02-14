@@ -1,6 +1,5 @@
 package de.fyreum.dreships.commands;
 
-import de.erethon.commons.chat.MessageUtil;
 import de.erethon.commons.command.DRECommand;
 import de.fyreum.dreships.DREShips;
 import de.fyreum.dreships.config.ShipMessage;
@@ -29,7 +28,7 @@ public class CreateCommand extends DRECommand {
     public void onExecute(String[] args, CommandSender commandSender) {
         Player player = (Player) commandSender;
         if (args[1] == null) {
-            MessageUtil.sendMessage(player, ShipMessage.ERROR_MISSING_ARGUMENTS.getMessage());
+            ShipMessage.ERROR_MISSING_ARGUMENTS.sendMessage(player);
             return;
         }
         try {
@@ -39,7 +38,7 @@ public class CreateCommand extends DRECommand {
                 try {
                     price = Integer.parseInt(args[1]);
                 } catch (NumberFormatException e) {
-                    MessageUtil.sendMessage(player, ShipMessage.ERROR_PRICE_INVALID.getMessage());
+                    ShipMessage.ERROR_PRICE_INVALID.sendMessage(player);
                     return;
                 }
                 signManager.createFromCache(commandSender, player.getUniqueId(), price);
@@ -47,7 +46,7 @@ public class CreateCommand extends DRECommand {
                 signManager.calculateAndCreateFromCache(commandSender, player.getUniqueId(), multipliedDistance);
             }
         } catch (CacheSignException c) {
-            MessageUtil.sendMessage(player, ShipMessage.CMD_CACHE_EMPTY.getMessage());
+            ShipMessage.CMD_CACHE_EMPTY.sendMessage(player);
         }
     }
 }

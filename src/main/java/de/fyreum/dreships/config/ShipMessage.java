@@ -22,13 +22,20 @@ public enum ShipMessage implements Message {
     CMD_DELETE_SUCCESS("cmd.delete.success"),
     CMD_DISABLE_SUCCESS("cmd.disable.success"),
     CMD_ENABLE_SUCCESS("cmd.enable.success"),
+    CMD_IGNORE_WORLD_SUCCESS("cmd.ignoreWorld.success"),
     CMD_INFO_TRAVEL_SIGN("cmd.info.travelSign"),
+    CMD_MESSAGE_SUCCESS("cmd.message.success"),
+    CMD_RELOAD_SUCCESS("cmd.reload.success"),
+    CMD_REMOVE_MESSAGE_SUCCESS("cmd.removeMessage.success"),
+    CMD_RENAME_SUCCESS("cmd.rename.success"),
     CMD_SAVE_ALREADY_SIGN("cmd.save.alreadySign"),
     CMD_SAVE_SUCCESS("cmd.save.success"),
+    CMD_SET_COOLDOWN_SUCCESS("cmd.setCooldown.success"),
+    CMD_SET_PRICE_SUCCESS("cmd.setPrice.success"),
+    CMD_SPECIFIC_WORLD_SUCCESS("cmd.specificWorld.success"),
     CMD_TP_SUGGESTION("cmd.tp.suggestion"),
     CMD_TP_HOVER_TEXT("cmd.tp.hoverText"),
     CMD_TP_NOT_WHITELISTED("cmd.tp.notWhitelisted"),
-    CMD_RELOAD_success("cmd.reload.success"),
     ERROR_PRICE_INVALID("error.price.invalid"),
     ERROR_TARGET_BLOCK_INVALID("error.target.invalid"),
     ERROR_TARGET_NO_SIGN("error.target.noSign"),
@@ -57,6 +64,7 @@ public enum ShipMessage implements Message {
         }
         return this.getMessageHandler().getMessage(this);
     }
+
     @Override
     public String getMessage(String... args) {
         if (this.getMessageHandler().getMessage(this, args) == null) {
@@ -66,6 +74,9 @@ public enum ShipMessage implements Message {
     }
 
     public void sendMessage(CommandSender sender, String... args) {
+        if (sender == null) {
+            return;
+        }
         MessageUtil.sendMessage(sender, this.getMessage(args));
     }
 

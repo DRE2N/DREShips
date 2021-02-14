@@ -26,8 +26,10 @@ import org.jetbrains.annotations.Nullable;
 
 import java.io.File;
 
-import static org.bukkit.block.BlockFace.*;
+import static org.bukkit.block.BlockFace.EAST;
+import static org.bukkit.block.BlockFace.NORTH;
 import static org.bukkit.block.BlockFace.SOUTH;
+import static org.bukkit.block.BlockFace.WEST;
 
 public final class DREShips extends DREPlugin {
 
@@ -64,6 +66,7 @@ public final class DREShips extends DREPlugin {
         plugin = this;
         this.instantiateShipConfig();
         this.instantiateSignConfig();
+        this.loadMessages();
         economy = getEconomyProvider();
         playerCache = new PlayerCache();
         priceCalculation = new PriceCalculationUtil();
@@ -75,8 +78,6 @@ public final class DREShips extends DREPlugin {
         commandCache.register(plugin);
         this.getCommand(ShipCommandCache.LABEL).setTabCompleter(commandCache);
         this.getServer().getPluginManager().registerEvents(new SignListener(), getInstance());
-        this.attemptToSaveResource("languages/german.yml", false);
-        this.getMessageHandler().setDefaultLanguage(shipConfig.getLanguage());
     }
 
     @Override
@@ -91,6 +92,16 @@ public final class DREShips extends DREPlugin {
 
     public void instantiateSignConfig() {
         signConfig = new SignConfig(plugin);
+    }
+
+    public void loadMessages() {
+        this.attemptToSaveResource("languages/german.yml", false);
+        this.getMessageHandler().setDefaultLanguage(shipConfig.getLanguage());
+    }
+
+    public void reloadMessages() {
+        this.reloadMessageHandler();
+        this.getMessageHandler().setDefaultLanguage(shipConfig.getLanguage());
     }
 
     /* getter */

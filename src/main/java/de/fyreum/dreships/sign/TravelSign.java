@@ -1,58 +1,83 @@
 package de.fyreum.dreships.sign;
 
 import de.fyreum.dreships.DREShips;
+import de.fyreum.dreships.config.ShipMessage;
 import de.fyreum.dreships.persistentdata.ShipDataTypes;
-import de.fyreum.dreships.serialization.SerializableLocation;
+import net.milkbowl.vault.economy.Economy;
 import org.bukkit.Location;
 import org.bukkit.NamespacedKey;
 import org.bukkit.block.Block;
 import org.bukkit.block.Sign;
+import org.bukkit.persistence.PersistentDataContainer;
 import org.bukkit.persistence.PersistentDataType;
 import org.jetbrains.annotations.Nullable;
 
-import java.io.Serializable;
+public final class TravelSign {
 
-public final class TravelSign implements Serializable {
+    public static final int DEFAULT_COOLDOWN = 10;
 
-    private static final long serialVersionUID = -3006306973059990308L;
     private final String name, destinationName;
-    private final SerializableLocation location, destination;
+    private final Location location, destination;
     private final int price;
-    private transient boolean disabled = false;
+    private final String message;
+    private final int cooldown; // seconds
+    private final boolean disabled;
+    private final boolean ignoreWorld;
 
     private static final NamespacedKey nameKey = DREShips.getNamespace("name");
     private static final NamespacedKey destinationNameKey = DREShips.getNamespace("destinationName");
     private static final NamespacedKey destinationKey = DREShips.getNamespace("destination");
     private static final NamespacedKey priceKey = DREShips.getNamespace("price");
     private static final NamespacedKey disabledKey = DREShips.getNamespace("disabled");
+    private static final NamespacedKey cooldownKey = DREShips.getNamespace("cooldown");
+    private static final NamespacedKey messageKey = DREShips.getNamespace("message");
+    private static final NamespacedKey ignoreWorldKey = DREShips.getNamespace("ignoreWorld");
 
     public TravelSign(String name, String destinationName, Location location, Location destination, int price) {
-        this.name = name;
-        this.destinationName = destinationName;
-        this.location = new SerializableLocation(location);
-        this.destination = new SerializableLocation(destination);
-        this.price = price;
+        this(name, destinationName, location, destination, price, false);
     }
 
-    public TravelSign(String name, String destinationName, SerializableLocation location, SerializableLocation destination, int price, boolean disabled) {
+    public TravelSign(String name, String destinationName, Location location, Location destination, int price, boolean disabled) {
+        this(name, destinationName, location, destination, price, disabled, DEFAULT_COOLDOWN);
+    }
+
+    public TravelSign(String name, String destinationName, Location location, Location destination, int price, boolean disabled, int cooldown) {
+        this(name, destinationName, location, destination, price, disabled, cooldown, "");
+    }
+
+    public TravelSign(String name, String destinationName, Location location, Location destination,
+                      int price, boolean disabled, int cooldown, String message) {
+        this(name, destinationName, location, destination, price, disabled, cooldown, message, false);
+    }
+
+    public TravelSign(String name, String destinationName, Location location, Location destination,
+                      int price, boolean disabled, int cooldown, String message, boolean ignoreWorld) {
         this.name = name;
         this.destinationName = destinationName;
         this.location = location;
         this.destination = destination;
         this.price = price;
         this.disabled = disabled;
+        this.cooldown = cooldown;
+        this.message = message.isEmpty() ? getDefaultMessage() : message;
+        this.ignoreWorld = ignoreWorld;
     }
 
     public TravelSign(Sign sign) throws IllegalArgumentException {
         if (!travelSign(sign)) {
-            throw new IllegalArgumentException("The given sign doesn't contain the required TravelSign data so it's no TravelSign");
+            throw new IllegalArgumentException("The given sign doesn't contain the required TravelSign data");
         }
-        this.name = sign.getPersistentDataContainer().get(nameKey, PersistentDataType.STRING);
-        this.destinationName = sign.getPersistentDataContainer().get(destinationNameKey, PersistentDataType.STRING);
-        this.location = new SerializableLocation(sign.getLocation());
-        this.destination = new SerializableLocation(sign.getPersistentDataContainer().get(destinationKey, ShipDataTypes.LOCATION));
-        this.price = sign.getPersistentDataContainer().getOrDefault(priceKey, PersistentDataType.INTEGER, 0);
-        this.disabled = sign.getPersistentDataContainer().has(disabledKey, ShipDataTypes.BOOLEAN);
+        PersistentDataContainer container = sign.getPersistentDataContainer();
+
+        this.name = container.get(nameKey, PersistentDataType.STRING);
+        this.destinationName = container.get(destinationNameKey, PersistentDataType.STRING);
+        this.location = sign.getLocation();
+        this.destination = container.get(destinationKey, ShipDataTypes.LOCATION);
+        this.price = container.getOrDefault(priceKey, PersistentDataType.INTEGER, 0);
+        this.cooldown = container.getOrDefault(cooldownKey, PersistentDataType.INTEGER, DEFAULT_COOLDOWN);
+        this.message = container.getOrDefault(messageKey, PersistentDataType.STRING, getDefaultMessage());
+        this.disabled = container.has(disabledKey, ShipDataTypes.BOOLEAN);
+        this.ignoreWorld = container.has(ignoreWorldKey, ShipDataTypes.BOOLEAN);
     }
 
     public static boolean travelSign(Sign sign) {
@@ -77,10 +102,10 @@ public final class TravelSign implements Serializable {
         if (obj == null) {
             return false;
         }
-        if (!(obj instanceof TravelSign)) {
+        if (getClass() != obj.getClass()) {
             return false;
         }
-        TravelSign other = (TravelSign) obj;
+        final TravelSign other = (TravelSign) obj;
         return this.getLocation().equals(other.getLocation());
     }
 
@@ -88,6 +113,28 @@ public final class TravelSign implements Serializable {
 
     public boolean isDisabled() {
         return disabled;
+    }
+
+    public boolean hasCooldown() {
+        return cooldown != 0;
+    }
+
+    public int getCooldown() {
+        return cooldown;
+    }
+
+    public boolean isIgnoreWorld() {
+        return ignoreWorld;
+    }
+
+    public String getMessage() {
+        return message;
+    }
+
+    public String getDefaultMessage() {
+        Economy economy = DREShips.getInstance().getEconomy();
+        String priceString = economy == null ? String.valueOf(price) : String.valueOf(economy.format(price));
+        return ShipMessage.TP_SUCCESS.getMessage(name, destinationName, priceString);
     }
 
     public String getName() {
@@ -99,15 +146,11 @@ public final class TravelSign implements Serializable {
     }
 
     public Location getLocation() {
-        return location.getLocation();
+        return location;
     }
 
     public Location getDestination() {
-        return destination.getLocation();
-    }
-
-    public SerializableLocation getSerializableLocation() {
-        return location;
+        return destination;
     }
 
     public int getPrice() {
@@ -139,7 +182,19 @@ public final class TravelSign implements Serializable {
         return priceKey;
     }
 
+    public static NamespacedKey getCooldownKey() {
+        return cooldownKey;
+    }
+
+    public static NamespacedKey getMessageKey() {
+        return messageKey;
+    }
+
     public static NamespacedKey getDisabledKey() {
         return disabledKey;
+    }
+
+    public static NamespacedKey getIgnoreWorldKey() {
+        return ignoreWorldKey;
     }
 }

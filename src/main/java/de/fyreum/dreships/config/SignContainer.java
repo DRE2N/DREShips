@@ -1,5 +1,6 @@
 package de.fyreum.dreships.config;
 
+import de.fyreum.dreships.sign.ListedTravelSign;
 import de.fyreum.dreships.sign.TravelSign;
 import org.bukkit.Location;
 import org.jetbrains.annotations.NotNull;
@@ -12,24 +13,33 @@ import java.util.Spliterator;
 import java.util.function.Consumer;
 import java.util.stream.Stream;
 
-public class SignContainer implements Iterable<TravelSign>, Serializable {
+/**
+ * This class is for visual use (/ds list) only.
+ * Changing its values won't effect the actual signs.
+ * @see de.fyreum.dreships.commands.ListCommand
+ */
+public class SignContainer implements Iterable<ListedTravelSign>, Serializable {
 
     private static final long serialVersionUID = -3362376096654924167L;
-    private final Set<TravelSign> travelSigns;
+    private final Set<ListedTravelSign> travelSigns;
 
     public SignContainer() {
         this.travelSigns = new HashSet<>();
     }
 
-    public SignContainer(Set<TravelSign> travelSigns) {
+    public SignContainer(Set<ListedTravelSign> travelSigns) {
         this.travelSigns = travelSigns;
     }
 
     public void add(TravelSign t) {
+        this.travelSigns.add(new ListedTravelSign(t));
+    }
+
+    public void add(ListedTravelSign t) {
         this.travelSigns.add(t);
     }
 
-    public boolean remove(TravelSign t) {
+    public boolean remove(ListedTravelSign t) {
         return this.travelSigns.remove(t);
     }
 
@@ -41,13 +51,17 @@ public class SignContainer implements Iterable<TravelSign>, Serializable {
         return this.contains(t.getLocation());
     }
 
+    public boolean contains(ListedTravelSign t) {
+        return this.contains(t.getLocation());
+    }
+
     public boolean contains(@NotNull Location location) {
         return this.stream().filter(sign -> sign.getLocation().equals(location)).findFirst().orElse(null) != null;
     }
 
     // getter
 
-    public Set<TravelSign> getTravelSigns() {
+    public Set<ListedTravelSign> getListedTravelSigns() {
         return travelSigns;
     }
 
@@ -55,25 +69,25 @@ public class SignContainer implements Iterable<TravelSign>, Serializable {
 
     @NotNull
     @Override
-    public Iterator<TravelSign> iterator() {
+    public Iterator<ListedTravelSign> iterator() {
         return travelSigns.iterator();
     }
 
     @Override
-    public void forEach(Consumer<? super TravelSign> action) {
+    public void forEach(Consumer<? super ListedTravelSign> action) {
         travelSigns.forEach(action);
     }
 
     @Override
-    public Spliterator<TravelSign> spliterator() {
+    public Spliterator<ListedTravelSign> spliterator() {
         return travelSigns.spliterator();
     }
 
-    public Stream<TravelSign> stream() {
+    public Stream<ListedTravelSign> stream() {
         return travelSigns.stream();
     }
 
-    public Stream<TravelSign> parallelStream() {
+    public Stream<ListedTravelSign> parallelStream() {
         return travelSigns.stream();
     }
 }

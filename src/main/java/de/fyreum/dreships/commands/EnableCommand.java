@@ -1,16 +1,11 @@
 package de.fyreum.dreships.commands;
 
-import de.erethon.commons.chat.MessageUtil;
-import de.erethon.commons.command.DRECommand;
 import de.fyreum.dreships.DREShips;
 import de.fyreum.dreships.config.ShipMessage;
 import de.fyreum.dreships.sign.TravelSign;
-import org.bukkit.block.Block;
-import org.bukkit.block.Sign;
-import org.bukkit.command.CommandSender;
 import org.bukkit.entity.Player;
 
-public class EnableCommand extends DRECommand {
+public class EnableCommand extends TravelSignCommand {
 
     DREShips plugin = DREShips.getInstance();
 
@@ -25,19 +20,7 @@ public class EnableCommand extends DRECommand {
     }
 
     @Override
-    public void onExecute(String[] strings, CommandSender commandSender) {
-        Player player = (Player) commandSender;
-        Block target = player.getTargetBlock(8);
-        if (target == null || !DREShips.isSign(target)) {
-            MessageUtil.sendMessage(player, ShipMessage.ERROR_TARGET_NO_SIGN.getMessage());
-            return;
-        }
-        Sign sign = (Sign) target.getState();
-        if (!TravelSign.travelSign(sign)) {
-            MessageUtil.sendMessage(player, ShipMessage.ERROR_TARGET_NO_TRAVEL_SIGN.getMessage());
-            return;
-        }
-        TravelSign travelSign = new TravelSign(sign);
+    public void onExecute(TravelSign travelSign, String[] args, Player player) {
         plugin.getSignManager().enable(travelSign);
         ShipMessage.CMD_ENABLE_SUCCESS.sendMessage(player);
     }

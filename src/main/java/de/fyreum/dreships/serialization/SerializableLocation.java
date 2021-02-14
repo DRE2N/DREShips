@@ -74,4 +74,16 @@ public class SerializableLocation implements Serializable {
     public float getPitch() {
         return pitch;
     }
+
+    @Override
+    public boolean equals(Object obj) {
+        if (obj == null) {
+            return false;
+        }
+        if (getClass() != obj.getClass()) {
+            return false;
+        }
+        final SerializableLocation other = (SerializableLocation) obj;
+        return getLocation().equals(other.getLocation());
+    }
 }

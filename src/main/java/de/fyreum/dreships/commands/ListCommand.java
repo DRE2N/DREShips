@@ -4,8 +4,8 @@ import de.erethon.commons.chat.MessageUtil;
 import de.erethon.commons.command.DRECommand;
 import de.erethon.commons.misc.NumberUtil;
 import de.fyreum.dreships.DREShips;
+import de.fyreum.dreships.sign.ListedTravelSign;
 import de.fyreum.dreships.sign.SignManager;
-import de.fyreum.dreships.sign.TravelSign;
 import net.md_5.bungee.api.ChatColor;
 import net.md_5.bungee.api.chat.ClickEvent;
 import net.md_5.bungee.api.chat.HoverEvent;
@@ -14,7 +14,11 @@ import net.md_5.bungee.api.chat.hover.content.Text;
 import org.bukkit.Location;
 import org.bukkit.command.CommandSender;
 
-import java.util.*;
+import java.util.ArrayList;
+import java.util.Comparator;
+import java.util.List;
+import java.util.Set;
+import java.util.UUID;
 import java.util.stream.Collectors;
 
 public class ListCommand extends DRECommand {
@@ -36,11 +40,11 @@ public class ListCommand extends DRECommand {
 
     @Override
     public void onExecute(String[] args, CommandSender sender) {
-        Set<TravelSign> travelSigns = DREShips.getInstance().getSignConfig().getSignContainer().getTravelSigns();
-        List<TravelSign> sorted = travelSigns.stream()
-                .sorted(Comparator.comparing(TravelSign::getName))
+        Set<ListedTravelSign> travelSigns = DREShips.getInstance().getSignConfig().getSignContainer().getListedTravelSigns();
+        List<ListedTravelSign> sorted = travelSigns.stream()
+                .sorted(Comparator.comparing(ListedTravelSign::getName))
                 .collect(Collectors.toList());
-        ArrayList<TravelSign> toSend = new ArrayList<>();
+        ArrayList<ListedTravelSign> toSend = new ArrayList<>();
 
         int page = 1;
         if (args.length == 2) {
@@ -51,7 +55,7 @@ public class ListCommand extends DRECommand {
         int min = 0;
 
         int perPage = plugin.getShipConfig().getSignsPerListPage();
-        for (TravelSign travelSign : sorted) {
+        for (ListedTravelSign travelSign : sorted) {
             send++;
             if (send >= page * perPage - (perPage - 1) && send <= page * perPage) {
                 min = page * perPage - (perPage - 1);
@@ -63,7 +67,7 @@ public class ListCommand extends DRECommand {
         MessageUtil.sendCenteredMessage(sender, "&8&l[ &1List &8&l]");
         MessageUtil.sendCenteredMessage(sender, "&8&l[ &9" + min + "-" + max + " &8/&9 " + send + " &8|&9 " + page + " &8&l]");
 
-        for (TravelSign travelSign : toSend) {
+        for (ListedTravelSign travelSign : toSend) {
             MessageUtil.sendMessage(sender,
                     buildMessage(travelSign.getName(), travelSign.getLocation()),
                     new TextComponent(ChatColor.GRAY + " -> "),

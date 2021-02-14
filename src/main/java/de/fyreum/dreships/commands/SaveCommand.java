@@ -1,10 +1,8 @@
 package de.fyreum.dreships.commands;
 
-import de.erethon.commons.chat.MessageUtil;
 import de.erethon.commons.command.DRECommand;
 import de.fyreum.dreships.DREShips;
 import de.fyreum.dreships.config.ShipMessage;
-import de.fyreum.dreships.sign.SignManager;
 import de.fyreum.dreships.sign.TravelSign;
 import de.fyreum.dreships.sign.cache.CacheSign;
 import org.bukkit.block.Block;
@@ -33,21 +31,21 @@ public class SaveCommand extends DRECommand {
         Sign sign;
         Block target = player.getTargetBlock(8);
         if (args[1] == null) {
-            MessageUtil.sendMessage(player, ShipMessage.ERROR_MISSING_ARGUMENTS.getMessage());
+            ShipMessage.ERROR_MISSING_ARGUMENTS.sendMessage(player);
             return;
         }
         if (target == null) {
-            MessageUtil.sendMessage(player, ShipMessage.ERROR_TARGET_BLOCK_INVALID.getMessage());
+            ShipMessage.ERROR_TARGET_BLOCK_INVALID.sendMessage(player);
             return;
         }
         if (DREShips.isSign(target)) {
             sign = (Sign) target.getState();
             if (TravelSign.travelSign(sign)) {
-                MessageUtil.sendMessage(player, ShipMessage.CMD_SAVE_ALREADY_SIGN.getMessage());
+                ShipMessage.CMD_SAVE_ALREADY_SIGN.sendMessage(player);
                 return;
             }
         } else {
-            MessageUtil.sendMessage(player, ShipMessage.ERROR_TARGET_NO_SIGN.getMessage());
+            ShipMessage.ERROR_TARGET_NO_SIGN.sendMessage(player);
             return;
         }
         plugin.getPlayerCache().save(player.getUniqueId(), new CacheSign(sign, args[1]));

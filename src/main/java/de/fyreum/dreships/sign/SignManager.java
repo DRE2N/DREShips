@@ -14,6 +14,7 @@ import org.bukkit.Location;
 import org.bukkit.block.Block;
 import org.bukkit.block.Sign;
 import org.bukkit.command.CommandSender;
+import org.bukkit.entity.Player;
 import org.bukkit.persistence.PersistentDataType;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
@@ -32,6 +33,26 @@ public class SignManager {
     }
 
     // ----------TravelSign---------
+
+    public boolean check(Player player, TravelSign sign) {
+        boolean correct = true;
+
+        if (!plugin.getSignConfig().getSignContainer().contains(sign)) {
+            plugin.getSignConfig().getSignContainer().add(new ListedTravelSign(sign));
+            ShipMessage.CMD_CHECK_SIGN_WAS_NOT_LISTED.sendMessage(player);
+            correct = false;
+        }
+        if (!plugin.getSignConfig().getSignContainer().contains(sign.getDestination())) {
+            Block destinationBlock = sign.getDestination().getBlock();
+            if (!TravelSign.travelSign(destinationBlock)) {
+                return false;
+            }
+            plugin.getSignConfig().getSignContainer().add(new ListedTravelSign((Sign) destinationBlock.getState()));
+            ShipMessage.CMD_CHECK_DESTINATION_WAS_NOT_LISTED.sendMessage(player);
+            correct = false;
+        }
+        return correct;
+    }
 
     public void createFromCache(@NotNull CommandSender sender, @NotNull UUID uuid, int price) throws CacheSignException {
         if (!playerCache.isFull(uuid)) {
@@ -111,13 +132,10 @@ public class SignManager {
     }
 
     // returns the amount of deleted signs
-    public int delete(CommandSender sender, Sign sign) {
-        if (!TravelSign.travelSign(sign)) {
-            return 0;
-        }
-        Block destinationBlock = new TravelSign(sign).getDestination().getBlock();
-        Sign destination = DREShips.isSign(destinationBlock) ? (Sign) new TravelSign(sign).getDestination().getBlock().getState() : null;
-        return loadAndDelete(sender, sign) + loadAndDelete(sender, destination);
+    public int delete(CommandSender sender, TravelSign travelSign) {
+        Block destinationBlock = travelSign.getDestination().getBlock();
+        Sign destination = TravelSign.travelSign(destinationBlock) ? (Sign) destinationBlock.getState() : null;
+        return loadAndDelete(sender, travelSign.getSign()) + loadAndDelete(sender, destination);
     }
 
     private int loadAndDelete(@NotNull CommandSender sender, @Nullable Sign sign) {
@@ -170,6 +188,9 @@ public class SignManager {
         sign.getPersistentDataContainer().remove(TravelSign.getDestinationKey());
         sign.getPersistentDataContainer().remove(TravelSign.getPriceKey());
         sign.getPersistentDataContainer().remove(TravelSign.getDisabledKey());
+        sign.getPersistentDataContainer().remove(TravelSign.getIgnoreWorldKey());
+        sign.getPersistentDataContainer().remove(TravelSign.getMessageKey());
+        sign.getPersistentDataContainer().remove(TravelSign.getCooldownKey());
         sign.update(true);
     }
 
@@ -184,6 +205,8 @@ public class SignManager {
         sign.update(true);
     }
 
+    /* disable - enable */
+
     public void disable(@NotNull TravelSign travelSign) {
         if (travelSign.getSign() != null) {
             this.disable(travelSign.getSign());
@@ -196,6 +219,7 @@ public class SignManager {
     public void disable(@NotNull Sign sign) {
         this.visualizeDisable(sign);
         this.addDisabledPersistentData(sign);
+        this.setListedDisabled(sign, true);
     }
 
     private void visualizeDisable(@Nullable Sign sign) {
@@ -218,23 +242,218 @@ public class SignManager {
     }
 
     public void enable(@NotNull TravelSign travelSign) {
-        if (travelSign.getSign() != null) {
-            this.enable(travelSign.getSign());
+        Sign sign = travelSign.getSign();
+        if (sign != null) {
+            this.visualizeData(sign, travelSign.getName(), travelSign.getDestinationName(), travelSign.getPrice());
+            this.removeDisabledPersistentData(sign);
+            this.setListedDisabled(sign, false);
         }
-        if (DREShips.isSign(travelSign.getDestination().getBlock())) {
+        if (TravelSign.travelSign(travelSign.getDestination().getBlock())) {
             this.enable((Sign) travelSign.getDestination().getBlock().getState());
         }
     }
 
-    public void enable(@NotNull Sign sign) {
+    private void enable(@NotNull Sign sign) {
         TravelSign travelSign = new TravelSign(sign);
         this.visualizeData(sign, travelSign.getName(), travelSign.getDestinationName(), travelSign.getPrice());
         this.removeDisabledPersistentData(sign);
+        this.setListedDisabled(sign, false);
     }
 
     private void removeDisabledPersistentData(Sign sign) {
         sign.getPersistentDataContainer().remove(TravelSign.getDisabledKey());
         sign.update(true);
+    }
+
+    private void setListedDisabled(Sign sign, boolean set) {
+        for (ListedTravelSign listed : plugin.getSignConfig().getSignContainer().getListedTravelSigns()) {
+            if (listed.getLocation().equals(sign.getLocation())) {
+                listed.setDisabled(set);
+            }
+        }
+    }
+
+    /* cooldown */
+
+    public void setCooldown(TravelSign travelSign, int cooldown) {
+        Sign sign = travelSign.getSign();
+        if (sign != null) {
+            this.setCooldownPersistentData(sign, cooldown);
+            this.setListedCooldown(sign, cooldown);
+        }
+        if (DREShips.isSign(travelSign.getDestination().getBlock())) {
+            Sign destination = (Sign) travelSign.getDestination().getBlock().getState();
+            this.setCooldownPersistentData(destination, cooldown);
+            this.setListedCooldown(destination, cooldown);
+        }
+    }
+
+    private void setListedCooldown(Sign sign, int cooldown) {
+        for (ListedTravelSign listed : plugin.getSignConfig().getSignContainer().getListedTravelSigns()) {
+            if (listed.getLocation().equals(sign.getLocation())) {
+                listed.setCooldown(cooldown);
+            }
+        }
+    }
+
+    private void setCooldownPersistentData(Sign sign, int cooldown) {
+        sign.getPersistentDataContainer().set(TravelSign.getCooldownKey(), PersistentDataType.INTEGER, cooldown);
+        sign.update(true);
+    }
+
+    /* message */
+
+    public void setMessage(@NotNull TravelSign travelSign, String msg) {
+        Sign sign = travelSign.getSign();
+        if (sign != null) {
+            this.addMessagePersistentData(sign, msg);
+        }
+        if (DREShips.isSign(travelSign.getDestination().getBlock())) {
+            this.addMessagePersistentData((Sign) travelSign.getDestination().getBlock().getState(), msg);
+        }
+    }
+
+    private void addMessagePersistentData(Sign sign, String msg) {
+        sign.getPersistentDataContainer().set(TravelSign.getMessageKey(), PersistentDataType.STRING, msg);
+        sign.update(true);
+    }
+
+    public void removeMessage(@NotNull TravelSign travelSign) {
+        Sign sign = travelSign.getSign();
+        if (sign != null) {
+            this.removeMessagePersistentData(sign);
+        }
+        if (DREShips.isSign(travelSign.getDestination().getBlock())) {
+            this.removeMessagePersistentData((Sign) travelSign.getDestination().getBlock().getState());
+        }
+    }
+
+    private void removeMessagePersistentData(Sign sign) {
+        sign.getPersistentDataContainer().remove(TravelSign.getMessageKey());
+        sign.update(true);
+    }
+
+    /* ignoreWorld */
+
+    public void ignoreWorld(TravelSign travelSign) {
+        Sign sign = travelSign.getSign();
+        if (sign != null) {
+            this.addIgnoreWorldPersistentData(sign);
+            this.setListedIgnoreWorld(sign, true);
+        }
+        if (DREShips.isSign(travelSign.getDestination().getBlock())) {
+            Sign destination = (Sign) travelSign.getDestination().getBlock().getState();
+            this.addIgnoreWorldPersistentData(destination);
+            this.setListedIgnoreWorld(destination, true);
+        }
+    }
+
+    private void addIgnoreWorldPersistentData(Sign sign) {
+        sign.getPersistentDataContainer().set(TravelSign.getIgnoreWorldKey(), ShipDataTypes.BOOLEAN, true);
+        sign.update(true);
+    }
+
+    public void worldSpecific(TravelSign travelSign) {
+        Sign sign = travelSign.getSign();
+        if (sign != null) {
+            this.removeIgnoreWorldPersistentData(sign);
+            this.setListedIgnoreWorld(sign, false);
+        }
+        if (DREShips.isSign(travelSign.getDestination().getBlock())) {
+            Sign destination = (Sign) travelSign.getDestination().getBlock().getState();
+            this.removeIgnoreWorldPersistentData(destination);
+            this.setListedIgnoreWorld(destination, false);
+        }
+    }
+
+    private void removeIgnoreWorldPersistentData(Sign sign) {
+        sign.getPersistentDataContainer().remove(TravelSign.getIgnoreWorldKey());
+        sign.update(true);
+    }
+
+    private void setListedIgnoreWorld(Sign sign, boolean set) {
+        for (ListedTravelSign listed : plugin.getSignConfig().getSignContainer().getListedTravelSigns()) {
+            if (listed.getLocation().equals(sign.getLocation())) {
+                listed.setIgnoreWorld(set);
+            }
+        }
+    }
+
+    /* price */
+
+    public void setPrice(TravelSign travelSign, int price) {
+        Sign sign = travelSign.getSign();
+        if (sign != null) {
+            this.setPricePersistentData(sign, price);
+            this.setListedPrice(sign, price);
+            sign.setLine(2, ShipMessage.SIGN_LINE_THREE.getMessage(String.valueOf(price)));
+            sign.update(true);
+        }
+        if (DREShips.isSign(travelSign.getDestination().getBlock())) {
+            Sign destination = (Sign) travelSign.getDestination().getBlock().getState();
+            this.setPricePersistentData(destination, price);
+            this.setListedPrice(destination, price);
+            destination.setLine(2, ShipMessage.SIGN_LINE_THREE.getMessage(String.valueOf(price)));
+            destination.update(true);
+        }
+    }
+
+    private void setPricePersistentData(Sign sign, int price) {
+        sign.getPersistentDataContainer().set(TravelSign.getPriceKey(), PersistentDataType.INTEGER, price);
+        sign.update(true);
+    }
+
+    private void setListedPrice(Sign sign, int price) {
+        for (ListedTravelSign listed : plugin.getSignConfig().getSignContainer().getListedTravelSigns()) {
+            if (listed.getLocation().equals(sign.getLocation())) {
+                listed.setPrice(price);
+            }
+        }
+    }
+
+    /* rename */
+
+    public void rename(TravelSign travelSign, String name) {
+        Sign sign = travelSign.getSign();
+        if (sign != null) {
+            this.setNamePersistentData(sign, name);
+            this.setListedName(sign, name);
+            sign.setLine(1, ShipMessage.SIGN_LINE_TWO.getMessage(name));
+            sign.update(true);
+        }
+        if (DREShips.isSign(travelSign.getDestination().getBlock())) {
+            Sign destination = (Sign) travelSign.getDestination().getBlock().getState();
+            this.setDestinationNamePersistentData(destination, name);
+            this.setListedDestinationName(destination, name);
+            destination.setLine(3, ShipMessage.SIGN_LINE_FOUR.getMessage(name));
+            destination.update(true);
+        }
+    }
+
+    private void setNamePersistentData(Sign sign, String name) {
+        sign.getPersistentDataContainer().set(TravelSign.getNameKey(), PersistentDataType.STRING, name);
+        sign.update(true);
+    }
+
+    private void setDestinationNamePersistentData(Sign sign, String name) {
+        sign.getPersistentDataContainer().set(TravelSign.getDestinationNameKey(), PersistentDataType.STRING, name);
+        sign.update(true);
+    }
+
+    private void setListedName(Sign sign, String name) {
+        for (ListedTravelSign listed : plugin.getSignConfig().getSignContainer().getListedTravelSigns()) {
+            if (listed.getLocation().equals(sign.getLocation())) {
+                listed.setName(name);
+            }
+        }
+    }
+
+    private void setListedDestinationName(Sign sign, String name) {
+        for (ListedTravelSign listed : plugin.getSignConfig().getSignContainer().getListedTravelSigns()) {
+            if (listed.getDestination().equals(sign.getLocation())) {
+                listed.setDestinationName(name);
+            }
+        }
     }
 
     /* getter */

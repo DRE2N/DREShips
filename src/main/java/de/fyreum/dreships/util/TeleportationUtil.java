@@ -1,7 +1,6 @@
 package de.fyreum.dreships.util;
 
 import de.erethon.commons.chat.MessageUtil;
-import de.erethon.factionsxl.FactionsXL;
 import de.erethon.factionsxl.faction.Faction;
 import de.fyreum.dreships.DREShips;
 import de.fyreum.dreships.config.ShipMessage;
@@ -23,7 +22,11 @@ import org.bukkit.entity.Player;
 import org.bukkit.scheduler.BukkitRunnable;
 import org.jetbrains.annotations.NotNull;
 
-import java.util.*;
+import java.util.ArrayList;
+import java.util.HashSet;
+import java.util.List;
+import java.util.Set;
+import java.util.UUID;
 
 public class TeleportationUtil {
 
@@ -49,35 +52,38 @@ public class TeleportationUtil {
 
     public void teleport(@NotNull Player player, @NotNull TravelSign travelSign, boolean ignoreWarnings, boolean skip) {
         if (this.economy != null && !this.economy.has(player, travelSign.getPrice())) {
-            MessageUtil.sendMessage(player, ShipMessage.ERROR_NO_MONEY.getMessage());
+            ShipMessage.ERROR_NO_MONEY.sendMessage(player);
             return;
         }
-        if (!ignoreWarnings && unsafeDestination(travelSign.getDestination())) {
+        Location destination = travelSign.getDestination();
+        if (travelSign.isIgnoreWorld()) {
+            destination.setWorld(player.getWorld());
+        }
+
+        if (!ignoreWarnings && unsafeDestination(destination)) {
             whitelistPlayerDeleteCommand(player.getUniqueId());
             ShipMessage.WARN_SUFFOCATION.sendMessage(player);
             player.sendMessage(teleportMessage(travelSign.getLocation()));
             return;
         }
-        String priceString = economy == null ? String.valueOf(travelSign.getPrice()) : String.valueOf(economy.format(travelSign.getPrice()));
-        this.teleport(player, travelSign.getDestination(), travelSign.getPrice(),
-                ShipMessage.TP_SUCCESS.getMessage(travelSign.getName(), travelSign.getDestinationName(), priceString), skip);
+        this.teleport(player, destination, travelSign.getPrice(), travelSign.getMessage(), skip, travelSign.getCooldown());
     }
 
-    private void teleport(Player player, Location destination, double price, String message, boolean skip) {
+    private void teleport(Player player, Location destination, double price, String message, boolean skip, int seconds) {
         TravelSignTeleportationPreparationEvent preparationEvent = new TravelSignTeleportationPreparationEvent(player);
         if (player.hasPermission("dreships.bypass") | skip) {
             preparationEvent.setSkipped(true);
         }
 
         if (preparationEvent.callEvent()) {
-            if (preparationEvent.isSkipped()) {
+            if (preparationEvent.isSkipped() | seconds <= 0) {
                 TravelSignTeleportationEvent teleportationEvent = new TravelSignTeleportationEvent(player, player.getLocation(), destination);
                 if (teleportationEvent.callEvent()) {
                     this.teleport(player, teleportationEvent.getDestination(), price, message);
                 }
                 return;
             }
-            new CooldownTeleportation(player, destination, price, message).run();
+            new CooldownTeleportation(player, destination, price, message).run(seconds);
         }
     }
 
@@ -170,15 +176,15 @@ public class TeleportationUtil {
             this.location = player.getLocation();
         }
 
-        public void run() {
+        public void run(int seconds) {
             currentlyTeleporting.add(player.getUniqueId());
             BukkitRunnable runnable = new BukkitRunnable() {
                 @Override
                 public void run() {
                     if (player.getLocation().getBlockX() == location.getBlockX() && player.getLocation().getBlockY() ==
                             location.getBlockY() && player.getLocation().getBlockZ() == location.getBlockZ()) {
-                        player.sendActionBar(ChatColor.GREEN + multipliedCooldownString(repeats) + ChatColor.DARK_RED + multipliedCooldownString(10 - repeats));
-                        if (repeats == 10) {
+                        player.sendActionBar(ChatColor.GREEN + multipliedCooldownString(repeats) + ChatColor.DARK_RED + multipliedCooldownString(seconds - repeats));
+                        if (repeats == seconds) {
                             TravelSignTeleportationEvent teleportationEvent = new TravelSignTeleportationEvent(player, player.getLocation(), destination);
 
                             if (teleportationEvent.callEvent()) {

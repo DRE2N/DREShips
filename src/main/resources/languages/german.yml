@@ -20,18 +20,32 @@ cmd:
     success: "&aSchild wurde deaktiviert"
   enable:
     success: "&aSchild wurde aktiviert"
+  ignoreWorld:
+    success: "&aDieses Schild ist nun weltenunabhängig"
   info:
-    travelSign: "&8---------&l[ &bVerbindung&8 &l]&r&8---------\n&c> &3von&8: &6&v1 &7(&v2)\n&a> &3nach&8: &6&v3 &7(&v4)\n&c> &3für&8: &6&v5 Heronen\n&a> &3deaktiviert: &7&v6"
+    travelSign: "&8----------&l[ &9Verbindung&8 &l]&r&8----------\n&8> &3von&8: &6&v1 &7(&v2)\n&8> &3nach&8: &6&v3 &7(&v4)\n&8> &3für&8: &6&v5 Heronen\n&8---------&l[ &9Einstellungen&8 &l]&r&8---------\n&8> &3deaktiviert: &7&v6\n&8> &3Weltenunabhängig: &7&v7\n&8> &3Teleport-Dauer: &7&v8\n&8--------------------------------"
+  reload:
+    success: "&aPlugin wurde neugeladen"
+  removeMessage:
+    success: "&aBenutzerdefinierte Nachricht wurde entfernt"
+  rename:
+    success: "&aDas Schild wurde von &2&v1 &azu &2&v2 &aumbenannt"
   save:
     alreadySign: "&cDieses Schild hat bereits eine Verbindung"
     alreadyCached: "&7Dieses Schild ist schon zwischengespeichert"
     success: "&aSicherung erfolgreich"
+  setCooldown:
+    success: "&aCooldown wurde auf &2&v1 &agesetzt"
+  setPrice:
+    success: "&aDer Preis wurde geändert"
+  specificWorld:
+    success: "&aDieses Schild ist nun intergalaktisch"
   tp:
     suggestion: "&6&oIch bin mir dessen bewusst."
     hoverText: "&7Teleportieren?"
     notWhitelisted: "&7Deine Berechtigung für diesen Befehl ist &9abgelaufen&7. Dies geschieht nach &9&v1 Sekunden"
-  reload:
-    success: "&aConfig wurde neugeladen"
+  message:
+    success: "&aNachricht wurde geändert"
 tp:
   success: "&7Du bist von &b&v1 &7nach &b&v2 &7für &9&v3 &7gereist"
   taxMessage: "&aEs wurden &6&v2 &aGebühren auf das Konto von [&v3] überwiesen."
