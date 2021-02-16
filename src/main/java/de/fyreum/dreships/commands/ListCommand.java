@@ -13,6 +13,7 @@ import net.md_5.bungee.api.chat.TextComponent;
 import net.md_5.bungee.api.chat.hover.content.Text;
 import org.bukkit.Location;
 import org.bukkit.command.CommandSender;
+import org.bukkit.entity.Player;
 
 import java.util.ArrayList;
 import java.util.Comparator;
@@ -40,6 +41,8 @@ public class ListCommand extends DRECommand {
 
     @Override
     public void onExecute(String[] args, CommandSender sender) {
+        Player player = (Player) sender;
+
         Set<ListedTravelSign> travelSigns = DREShips.getInstance().getSignConfig().getSignContainer().getListedTravelSigns();
         List<ListedTravelSign> sorted = travelSigns.stream()
                 .sorted(Comparator.comparing(ListedTravelSign::getName))
@@ -64,11 +67,11 @@ public class ListCommand extends DRECommand {
             }
         }
 
-        MessageUtil.sendCenteredMessage(sender, "&8&l[ &1List &8&l]");
-        MessageUtil.sendCenteredMessage(sender, "&8&l[ &9" + min + "-" + max + " &8/&9 " + send + " &8|&9 " + page + " &8&l]");
+        MessageUtil.sendCenteredMessage(player, "&8&l[ &1List &8&l]");
+        MessageUtil.sendCenteredMessage(player, "&8&l[ &9" + min + "-" + max + " &8/&9 " + send + " &8|&9 " + page + " &8&l]");
 
         for (ListedTravelSign travelSign : toSend) {
-            MessageUtil.sendMessage(sender,
+            MessageUtil.sendMessage(player,
                     buildMessage(travelSign.getName(), travelSign.getLocation()),
                     new TextComponent(ChatColor.GRAY + " -> "),
                     buildMessage(travelSign.getDestinationName(), travelSign.getDestination()),

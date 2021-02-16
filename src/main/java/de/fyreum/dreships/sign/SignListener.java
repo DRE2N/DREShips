@@ -34,8 +34,7 @@ public class SignListener implements Listener {
         Sign sign = (Sign) event.getClickedBlock().getState();
         TravelSign travelSign;
         try {
-            travelSign = new TravelSign(sign);
-            travelSign.updateWorld(player.getWorld());
+            travelSign = new TravelSign(sign).updateWorld(player.getWorld());
         } catch (IllegalArgumentException i) {
             return;
         }
@@ -73,7 +72,10 @@ public class SignListener implements Listener {
 
     @EventHandler
     public void listCreatedSign(TravelSignCreateEvent event) {
-        plugin.getSignConfig().getSignContainer().add(event.getTravelSign());
+        TravelSign travelSign = event.getTravelSign();
+        if (!travelSign.isIgnoreWorld()) {
+            plugin.getSignConfig().getSignContainer().add(travelSign);
+        }
     }
 
     @EventHandler

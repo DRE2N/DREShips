@@ -44,7 +44,11 @@ public class SignContainer implements Iterable<ListedTravelSign>, Serializable {
     }
 
     public void remove(Location location) {
-        travelSigns.removeIf(travelSign -> travelSign.getLocation().equals(location));
+        try {
+            travelSigns.removeIf(travelSign -> travelSign.getLocation().equals(location));
+        } catch (NullPointerException ignored) {
+
+        }
     }
 
     public boolean contains(TravelSign t) {
@@ -56,7 +60,11 @@ public class SignContainer implements Iterable<ListedTravelSign>, Serializable {
     }
 
     public boolean contains(@NotNull Location location) {
-        return this.stream().filter(sign -> sign.getLocation().equals(location)).findFirst().orElse(null) != null;
+        try {
+            return this.stream().filter(sign -> sign.getLocation().equals(location)).findFirst().orElse(null) != null;
+        } catch (NullPointerException e) {
+            return false;
+        }
     }
 
     // getter

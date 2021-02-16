@@ -9,7 +9,6 @@ import org.bukkit.NamespacedKey;
 import org.bukkit.World;
 import org.bukkit.block.Block;
 import org.bukkit.block.Sign;
-import org.bukkit.entity.Player;
 import org.bukkit.persistence.PersistentDataContainer;
 import org.bukkit.persistence.PersistentDataType;
 import org.jetbrains.annotations.Nullable;
@@ -36,24 +35,28 @@ public final class TravelSign {
     private static final NamespacedKey ignoreWorldKey = DREShips.getNamespace("ignoreWorld");
 
     public TravelSign(String name, String destinationName, Location location, Location destination, int price) {
-        this(name, destinationName, location, destination, price, false);
+        this(name, destinationName, location, destination, price, "");
     }
 
-    public TravelSign(String name, String destinationName, Location location, Location destination, int price, boolean disabled) {
-        this(name, destinationName, location, destination, price, disabled, DEFAULT_COOLDOWN);
+    public TravelSign(String name, String destinationName, Location location, Location destination, int price, boolean ignoreWorld) {
+        this(name, destinationName, location, destination, price, "", DEFAULT_COOLDOWN, false, ignoreWorld);
     }
 
-    public TravelSign(String name, String destinationName, Location location, Location destination, int price, boolean disabled, int cooldown) {
-        this(name, destinationName, location, destination, price, disabled, cooldown, "");
+    public TravelSign(String name, String destinationName, Location location, Location destination, int price, String message) {
+        this(name, destinationName, location, destination, price, message, DEFAULT_COOLDOWN);
+    }
+
+    public TravelSign(String name, String destinationName, Location location, Location destination, int price, String message, int cooldown) {
+        this(name, destinationName, location, destination, price, message, cooldown, false);
     }
 
     public TravelSign(String name, String destinationName, Location location, Location destination,
-                      int price, boolean disabled, int cooldown, String message) {
-        this(name, destinationName, location, destination, price, disabled, cooldown, message, false);
+                      int price, String message, int cooldown, boolean disabled) {
+        this(name, destinationName, location, destination, price, message, cooldown, disabled, false);
     }
 
     public TravelSign(String name, String destinationName, Location location, Location destination,
-                      int price, boolean disabled, int cooldown, String message, boolean ignoreWorld) {
+                      int price, String message, int cooldown, boolean disabled, boolean ignoreWorld) {
         this.name = name;
         this.destinationName = destinationName;
         this.location = location;
@@ -93,6 +96,9 @@ public final class TravelSign {
     }
 
     public static boolean travelSign(Block block) {
+        if (block == null) {
+            return false;
+        }
         if (!DREShips.isSign(block)) {
             return false;
         }

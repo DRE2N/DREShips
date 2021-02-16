@@ -32,8 +32,6 @@ public class ShipCommandCache extends DRECommandCache implements TabCompleter {
     public SetCooldownCommand activateCooldownCommand = new SetCooldownCommand();
     public MessageCommand messageCommand = new MessageCommand();
     public RemoveMessageCommand removeMessageCommand = new RemoveMessageCommand();
-    public IgnoreWorldCommand ignoreWorldCommand = new IgnoreWorldCommand();
-    public SpecificWorldCommand specificWorldCommand = new SpecificWorldCommand();
     public RenameCommand renameCommand = new RenameCommand();
     public SetPriceCommand setPriceCommand = new SetPriceCommand();
 
@@ -56,8 +54,6 @@ public class ShipCommandCache extends DRECommandCache implements TabCompleter {
         addCommand(activateCooldownCommand);
         addCommand(messageCommand);
         addCommand(removeMessageCommand);
-        addCommand(ignoreWorldCommand);
-        addCommand(specificWorldCommand);
         addCommand(renameCommand);
         addCommand(setPriceCommand);
     }
@@ -91,6 +87,13 @@ public class ShipCommandCache extends DRECommandCache implements TabCompleter {
                 }
                 return completes;
             }
+        }
+        if (args.length == 3) {
+            if (createCommand.getCommand().equalsIgnoreCase(args[0]) || createCommand.getAliases().contains(args[0])) {
+                if ("true".toLowerCase().startsWith(args[2].toLowerCase())) completes.add("true");
+                if ("false".toLowerCase().startsWith(args[2].toLowerCase())) completes.add("false");
+            }
+            return completes;
         }
         return completes;
     }

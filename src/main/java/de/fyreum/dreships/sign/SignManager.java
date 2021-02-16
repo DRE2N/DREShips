@@ -37,6 +37,9 @@ public class SignManager {
     public boolean check(Player player, TravelSign sign) {
         boolean correct = true;
 
+        if (sign.isIgnoreWorld()) {
+            return true;
+        }
         if (!plugin.getSignConfig().getSignContainer().contains(sign)) {
             plugin.getSignConfig().getSignContainer().add(new ListedTravelSign(sign));
             ShipMessage.CMD_CHECK_SIGN_WAS_NOT_LISTED.sendMessage(player);
@@ -54,7 +57,7 @@ public class SignManager {
         return correct;
     }
 
-    public void createFromCache(@NotNull CommandSender sender, @NotNull UUID uuid, int price) throws CacheSignException {
+    public void createFromCache(@NotNull CommandSender sender, @NotNull UUID uuid, int price, boolean ignoreWorld) throws CacheSignException {
         if (!playerCache.isFull(uuid)) {
             throw new CacheSignException("Couldn't create a TravelSign. Player cache is empty.");
         }
@@ -63,11 +66,11 @@ public class SignManager {
         Sign destination = playerCache.getSecond(uuid).getSign();
         String destinationName = playerCache.getSecond(uuid).getName();
 
-        this.create(sender, sign, destination, name, destinationName, price);
+        this.create(sender, sign, destination, name, destinationName, price, ignoreWorld);
         this.playerCache.clear(uuid);
     }
 
-    public void calculateAndCreateFromCache(@NotNull CommandSender sender, @NotNull UUID uuid, double multipliedDistance) throws CacheSignException {
+    public void calculateAndCreateFromCache(@NotNull CommandSender sender, @NotNull UUID uuid, double multipliedDistance, boolean ignoreWorld) throws CacheSignException {
         if (!playerCache.isFull(uuid)) {
             throw new CacheSignException("Couldn't create a TravelSign. Player cache is empty.");
         }
@@ -77,20 +80,20 @@ public class SignManager {
         String destinationName = playerCache.getSecond(uuid).getName();
 
         int price = this.priceCalculation.calculate(sign.getLocation(), destination.getLocation(), multipliedDistance);
-        this.create(sender, sign, destination, name, destinationName, price);
+        this.create(sender, sign, destination, name, destinationName, price, ignoreWorld);
         this.playerCache.clear(uuid);
     }
 
-    public void create(@NotNull CommandSender sender, @NotNull Sign sign, @NotNull Sign destination, String name, String destinationName, int price) {
-        this.loadAndCreate(sender, sign, destination, name, destinationName, price);
-        this.loadAndCreate(sender, destination, sign, destinationName, name, price);
+    public void create(@NotNull CommandSender sender, @NotNull Sign sign, @NotNull Sign destination, String name, String destinationName, int price, boolean ignoreWorld) {
+        this.loadAndCreate(sender, sign, destination, name, destinationName, price, ignoreWorld);
+        this.loadAndCreate(sender, destination, sign, destinationName, name, price, ignoreWorld);
     }
 
-    private void loadAndCreate(@NotNull CommandSender sender, @NotNull Sign sign, @NotNull Sign destination, String name, String destinationName, int price) {
-        this.savePersistentData(sign, destination.getLocation(), name, destinationName, price);
+    private void loadAndCreate(@NotNull CommandSender sender, @NotNull Sign sign, @NotNull Sign destination, String name, String destinationName, int price, boolean ignoreWorld) {
+        this.savePersistentData(sign, destination.getLocation(), name, destinationName, price, ignoreWorld);
         this.visualizeData(sign, name, destinationName, price);
 
-        new TravelSignCreateEvent(new TravelSign(name, destinationName, sign.getLocation(), destination.getLocation(), price)).callEvent();
+        new TravelSignCreateEvent(new TravelSign(name, destinationName, sign.getLocation(), destination.getLocation(), price, ignoreWorld)).callEvent();
         MessageUtil.sendMessage(sender, ShipMessage.CMD_CREATE_SUCCESS.getMessage(simplify(sign.getLocation())));
         /*  // failed performance friendly concept (Sign changes won't save)
         BukkitRunnable runnable = new BukkitRunnable() {
@@ -115,11 +118,14 @@ public class SignManager {
         */
     }
 
-    private void savePersistentData(@NotNull Sign sign, Location destination, String name, String destName, int price) {
+    private void savePersistentData(@NotNull Sign sign, Location destination, String name, String destName, int price, boolean ignoreWorld) {
         sign.getPersistentDataContainer().set(TravelSign.getNameKey(), PersistentDataType.STRING, name);
         sign.getPersistentDataContainer().set(TravelSign.getDestinationNameKey(), PersistentDataType.STRING, destName);
         sign.getPersistentDataContainer().set(TravelSign.getDestinationKey(), ShipDataTypes.LOCATION, destination);
         sign.getPersistentDataContainer().set(TravelSign.getPriceKey(), PersistentDataType.INTEGER, price);
+        if (ignoreWorld) {
+            sign.getPersistentDataContainer().set(TravelSign.getIgnoreWorldKey(), ShipDataTypes.BOOLEAN, true);
+        }
         sign.update(true);
     }
 
@@ -331,52 +337,6 @@ public class SignManager {
     private void removeMessagePersistentData(Sign sign) {
         sign.getPersistentDataContainer().remove(TravelSign.getMessageKey());
         sign.update(true);
-    }
-
-    /* ignoreWorld */
-
-    public void ignoreWorld(TravelSign travelSign) {
-        Sign sign = travelSign.getSign();
-        if (sign != null) {
-            this.addIgnoreWorldPersistentData(sign);
-            this.setListedIgnoreWorld(sign, true);
-        }
-        if (DREShips.isSign(travelSign.getDestination().getBlock())) {
-            Sign destination = (Sign) travelSign.getDestination().getBlock().getState();
-            this.addIgnoreWorldPersistentData(destination);
-            this.setListedIgnoreWorld(destination, true);
-        }
-    }
-
-    private void addIgnoreWorldPersistentData(Sign sign) {
-        sign.getPersistentDataContainer().set(TravelSign.getIgnoreWorldKey(), ShipDataTypes.BOOLEAN, true);
-        sign.update(true);
-    }
-
-    public void worldSpecific(TravelSign travelSign) {
-        Sign sign = travelSign.getSign();
-        if (sign != null) {
-            this.removeIgnoreWorldPersistentData(sign);
-            this.setListedIgnoreWorld(sign, false);
-        }
-        if (DREShips.isSign(travelSign.getDestination().getBlock())) {
-            Sign destination = (Sign) travelSign.getDestination().getBlock().getState();
-            this.removeIgnoreWorldPersistentData(destination);
-            this.setListedIgnoreWorld(destination, false);
-        }
-    }
-
-    private void removeIgnoreWorldPersistentData(Sign sign) {
-        sign.getPersistentDataContainer().remove(TravelSign.getIgnoreWorldKey());
-        sign.update(true);
-    }
-
-    private void setListedIgnoreWorld(Sign sign, boolean set) {
-        for (ListedTravelSign listed : plugin.getSignConfig().getSignContainer().getListedTravelSigns()) {
-            if (listed.getLocation().equals(sign.getLocation())) {
-                listed.setIgnoreWorld(set);
-            }
-        }
     }
 
     /* price */

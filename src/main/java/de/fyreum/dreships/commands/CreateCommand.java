@@ -17,8 +17,8 @@ public class CreateCommand extends DRECommand {
         setCommand("create");
         setAliases("c", "cr");
         setMinArgs(1);
-        setMaxArgs(1);
-        setHelp("/ds create [price]");
+        setMaxArgs(2);
+        setHelp("/ds create [price] ([ignoreWorld])");
         setPlayerCommand(true);
         setConsoleCommand(false);
         setPermission("dreships.cmd.create");
@@ -31,6 +31,10 @@ public class CreateCommand extends DRECommand {
             ShipMessage.ERROR_MISSING_ARGUMENTS.sendMessage(player);
             return;
         }
+        boolean ignoreWorld = false;
+        if (args.length == 3) {
+            ignoreWorld = Boolean.parseBoolean(args[2]);
+        }
         try {
             double multipliedDistance = plugin.getPriceCalculationUtil().getDistanceMultiplier(args[1]);
             if (multipliedDistance < 0) {
@@ -41,9 +45,9 @@ public class CreateCommand extends DRECommand {
                     ShipMessage.ERROR_PRICE_INVALID.sendMessage(player);
                     return;
                 }
-                signManager.createFromCache(commandSender, player.getUniqueId(), price);
+                signManager.createFromCache(commandSender, player.getUniqueId(), price, ignoreWorld);
             } else {
-                signManager.calculateAndCreateFromCache(commandSender, player.getUniqueId(), multipliedDistance);
+                signManager.calculateAndCreateFromCache(commandSender, player.getUniqueId(), multipliedDistance, ignoreWorld);
             }
         } catch (CacheSignException c) {
             ShipMessage.CMD_CACHE_EMPTY.sendMessage(player);

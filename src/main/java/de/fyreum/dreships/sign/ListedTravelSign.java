@@ -15,10 +15,9 @@ public class ListedTravelSign implements Serializable {
     private int price;
     private int cooldown; // seconds
     private boolean disabled;
-    private boolean ignoreWorld;
 
     public ListedTravelSign(String name, String destinationName, SerializableLocation location, SerializableLocation destination,
-                            int price, int cooldown, boolean disabled, boolean ignoreWorld) {
+                            int price, int cooldown, boolean disabled) {
         this.name = name;
         this.destinationName = destinationName;
         this.location = location;
@@ -26,7 +25,6 @@ public class ListedTravelSign implements Serializable {
         this.price = price;
         this.cooldown = cooldown;
         this.disabled = disabled;
-        this.ignoreWorld = ignoreWorld;
     }
 
     public ListedTravelSign(Sign sign) {
@@ -41,11 +39,6 @@ public class ListedTravelSign implements Serializable {
         this.price = sign.getPrice();
         this.cooldown = sign.getCooldown();
         this.disabled = sign.isDisabled();
-        this.ignoreWorld = sign.isIgnoreWorld();
-    }
-
-    public static long getSerialVersionUID() {
-        return serialVersionUID;
     }
 
     public String getName() {
@@ -102,13 +95,5 @@ public class ListedTravelSign implements Serializable {
 
     public void setDisabled(boolean disabled) {
         this.disabled = disabled;
-    }
-
-    public boolean isIgnoreWorld() {
-        return ignoreWorld;
-    }
-
-    public void setIgnoreWorld(boolean ignoreWorld) {
-        this.ignoreWorld = ignoreWorld;
     }
 }

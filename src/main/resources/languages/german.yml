@@ -20,8 +20,6 @@ cmd:
     success: "&aSchild wurde deaktiviert"
   enable:
     success: "&aSchild wurde aktiviert"
-  ignoreWorld:
-    success: "&aDieses Schild ist nun weltenunabhängig"
   info:
     travelSign: "&8----------&l[ &9Verbindung&8 &l]&r&8----------\n&8> &3von&8: &6&v1 &7(&v2)\n&8> &3nach&8: &6&v3 &7(&v4)\n&8> &3für&8: &6&v5 Heronen\n&8---------&l[ &9Einstellungen&8 &l]&r&8---------\n&8> &3deaktiviert: &7&v6\n&8> &3Weltenunabhängig: &7&v7\n&8> &3Teleport-Dauer: &7&v8\n&8--------------------------------"
   reload:
@@ -38,8 +36,6 @@ cmd:
     success: "&aCooldown wurde auf &2&v1 &agesetzt"
   setPrice:
     success: "&aDer Preis wurde geändert"
-  specificWorld:
-    success: "&aDieses Schild ist nun intergalaktisch"
   tp:
     suggestion: "&6&oIch bin mir dessen bewusst."
     hoverText: "&7Teleportieren?"

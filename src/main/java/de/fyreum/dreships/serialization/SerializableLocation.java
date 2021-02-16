@@ -44,7 +44,11 @@ public class SerializableLocation implements Serializable {
     }
 
     public Location getLocation() {
-        return new Location(Bukkit.getWorld(worldName), x, y, z, yaw, pitch);
+        World world = Bukkit.getWorld(worldName);
+        if (world == null) {
+            world = Bukkit.getWorlds().get(0);
+        }
+        return new Location(world, x, y, z, yaw, pitch);
     }
 
     public World getWorld() {
