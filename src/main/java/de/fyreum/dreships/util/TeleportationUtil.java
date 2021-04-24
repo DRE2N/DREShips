@@ -61,7 +61,7 @@ public class TeleportationUtil {
         }
 
         if (!ignoreWarnings && unsafeDestination(destination)) {
-            whitelistPlayerDeleteCommand(player.getUniqueId());
+            whitelistPlayerTeleportCommand(player.getUniqueId());
             ShipMessage.WARN_SUFFOCATION.sendMessage(player);
             player.sendMessage(teleportMessage(travelSign.getLocation()));
             return;
@@ -114,7 +114,7 @@ public class TeleportationUtil {
         MessageUtil.sendActionBarMessage(player, message);
     }
 
-    private void whitelistPlayerDeleteCommand(UUID uuid) {
+    private void whitelistPlayerTeleportCommand(UUID uuid) {
         commandWhitelist.add(uuid);
         Bukkit.getScheduler().runTaskLater(plugin, () -> commandWhitelist.remove(uuid), plugin.getShipConfig().getWhitelistedTeleportationTime());
     }
