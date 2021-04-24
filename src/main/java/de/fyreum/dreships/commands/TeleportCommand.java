@@ -70,14 +70,16 @@ public class TeleportCommand extends DRECommand {
     private void dsListTeleport(String[] args, Player player) {
         Location location = new Location(Bukkit.getWorld(args[2]), Double.parseDouble(args[3]), Double.parseDouble(args[4]), Double.parseDouble(args[5]));
         Block block = location.getBlock();
+        location.add(0.5, 0, 0.5);
+
         if (block.getBlockData() instanceof WallSign) {
             WallSign signData = (WallSign) block.getState().getBlockData();
-            player.teleportAsync(location.add(0.5, 0, 0.5).setDirection(signData.getFacing().getDirection()));
-        } else if (location.getBlock().getBlockData() instanceof org.bukkit.block.data.type.Sign) {
+            player.teleportAsync(location.setDirection(signData.getFacing().getDirection()));
+        } else if (block.getBlockData() instanceof org.bukkit.block.data.type.Sign) {
             org.bukkit.block.data.type.Sign sign = (org.bukkit.block.data.type.Sign) block.getState().getBlockData();
-            player.teleportAsync(location.add(0.5, 0, 0.5).setDirection(sign.getRotation().getDirection()));
+            player.teleportAsync(location.setDirection(sign.getRotation().getDirection()));
         } else {
-            player.teleportAsync(location.add(0.5, 0, 0.5));
+            player.teleportAsync(location);
         }
     }
 }
