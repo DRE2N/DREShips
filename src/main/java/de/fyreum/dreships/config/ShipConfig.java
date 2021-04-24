@@ -110,13 +110,13 @@ public class ShipConfig extends DREConfig  {
 
     @Override
     public void load() {
-        language = config.getString("language");
-        airshipDistanceMultiplier = config.getDouble("multiplier.airship");
-        landDistanceMultiplier = config.getDouble("multiplier.land");
-        shipDistanceMultiplier = config.getDouble("multiplier.ship");
-        startPrice = config.getDouble("startPrice");
-        taxMultiplier = config.getDouble("taxMultiplier");
-        whitelistedTeleportationTime = config.getLong("whitelistedTeleportationTime");
+        language = config.getString("language", language);
+        airshipDistanceMultiplier = config.getDouble("multiplier.airship", airshipDistanceMultiplier);
+        landDistanceMultiplier = config.getDouble("multiplier.land", landDistanceMultiplier);
+        shipDistanceMultiplier = config.getDouble("multiplier.ship", shipDistanceMultiplier);
+        startPrice = config.getDouble("startPrice", startPrice);
+        taxMultiplier = config.getDouble("taxMultiplier", taxMultiplier);
+        whitelistedTeleportationTime = config.getLong("whitelistedTeleportationTime", whitelistedTeleportationTime);
         commandsPerHelpPage = config.getInt("commandsPerHelpPage") == 0 ? commandsPerHelpPage : config.getInt("commandsPerHelpPage");
         signsPerListPage = config.getInt("signsPerListPage") == 0 ? signsPerListPage : config.getInt("signsPerListPage");
     }
