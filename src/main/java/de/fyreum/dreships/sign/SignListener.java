@@ -39,6 +39,11 @@ public class SignListener implements Listener {
             return;
         }
         if (travelSign.isDisabled()) {
+            if (player.hasPermission("dreships.bypass")) {
+                if (!teleportationUtil.isTeleporting(player)) {
+                    teleportationUtil.teleport(player, travelSign, true, true);
+                }
+            }
             return;
         }
         if (!TravelSign.travelSign(travelSign.getDestination().getBlock())) {
