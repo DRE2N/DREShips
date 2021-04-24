@@ -20,13 +20,13 @@ public class PriceCalculationUtil {
     }
 
     public double getDistanceMultiplier(String name) {
-        if (name.equalsIgnoreCase("AIRSHIP")) {
+        if (name.equalsIgnoreCase("airship")) {
             return plugin.getShipConfig().getAirshipDistanceMultiplier();
         }
-        if (name.equalsIgnoreCase("SHIP")) {
+        if (name.equalsIgnoreCase("ship")) {
             return plugin.getShipConfig().getShipDistanceMultiplier();
         }
-        if (name.equalsIgnoreCase("LAND")) {
+        if (name.equalsIgnoreCase("land")) {
             return plugin.getShipConfig().getLandDistanceMultiplier();
         }
         return -1;
