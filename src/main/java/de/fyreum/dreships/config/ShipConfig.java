@@ -13,7 +13,7 @@ public class ShipConfig extends DREConfig  {
     private double landDistanceMultiplier = 0.01;
     private double shipDistanceMultiplier = 0.03;
     private double startPrice = 10.00;
-    private double taxMultiplier = 0.05;
+    private double taxMultiplier = 0.10;
     private long whitelistedTeleportationTime = 100;
     private int commandsPerHelpPage = 5;
     private int signsPerListPage = 7;
