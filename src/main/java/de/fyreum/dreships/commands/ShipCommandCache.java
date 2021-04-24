@@ -7,6 +7,7 @@ import de.fyreum.dreships.util.PriceCalculationUtil;
 import org.bukkit.command.Command;
 import org.bukkit.command.CommandSender;
 import org.bukkit.command.TabCompleter;
+import org.bukkit.plugin.java.JavaPlugin;
 import org.jetbrains.annotations.NotNull;
 
 import java.util.ArrayList;
@@ -56,6 +57,12 @@ public class ShipCommandCache extends DRECommandCache implements TabCompleter {
         addCommand(removeMessageCommand);
         addCommand(renameCommand);
         addCommand(setPriceCommand);
+    }
+
+    @Override
+    public void register(JavaPlugin plugin) {
+        super.register(plugin);
+        plugin.getCommand(LABEL).setTabCompleter(this);
     }
 
     @Override

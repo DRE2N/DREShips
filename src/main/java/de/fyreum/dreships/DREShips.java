@@ -76,7 +76,6 @@ public final class DREShips extends DREPlugin {
         // setup
         this.setCommandCache(commandCache);
         commandCache.register(plugin);
-        this.getCommand(ShipCommandCache.LABEL).setTabCompleter(commandCache);
         this.getServer().getPluginManager().registerEvents(new SignListener(), getInstance());
     }
 
