@@ -40,9 +40,7 @@ public class SignListener implements Listener {
         }
         if (travelSign.isDisabled()) {
             if (player.hasPermission("dreships.bypass")) {
-                if (!teleportationUtil.isTeleporting(player)) {
-                    teleportationUtil.teleport(player, travelSign, true, true);
-                }
+                teleportationUtil.teleport(player, travelSign, true, true);
             }
             return;
         }
@@ -52,10 +50,7 @@ public class SignListener implements Listener {
             return;
         }
         plugin.getSignManager().check(null, travelSign);
-
-        if (!teleportationUtil.isTeleporting(player)) {
-            teleportationUtil.teleport(player, travelSign);
-        }
+        teleportationUtil.teleport(player, travelSign);
     }
 
     @EventHandler(priority = EventPriority.HIGH)

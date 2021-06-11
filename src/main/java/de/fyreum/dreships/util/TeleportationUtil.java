@@ -51,6 +51,9 @@ public class TeleportationUtil {
     }
 
     public void teleport(@NotNull Player player, @NotNull TravelSign travelSign, boolean ignoreWarnings, boolean skip) {
+        if (isTeleporting(player)) {
+            return;
+        }
         if (this.economy != null && !this.economy.has(player, travelSign.getPrice())) {
             ShipMessage.ERROR_NO_MONEY.sendMessage(player);
             return;

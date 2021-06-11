@@ -57,10 +57,7 @@ public class TeleportCommand extends DRECommand {
                 return;
             }
             TravelSign sign = new TravelSign((Sign) location.getBlock().getState());
-
-            if (!teleportationUtil.isTeleporting(player)) {
-                teleportationUtil.teleport(player, sign, true, false);
-            }
+            teleportationUtil.teleport(player, sign, true, false);
         } catch (IllegalArgumentException e) {
             MessageUtil.log("&cCouldn't teleport through command, sign not found or incorrect. This error should not appear if only this plugin uses /ds teleport");
             MessageUtil.sendMessage(player, "&cSIGN NOT FOUND OR INCORRECT, please contact an Administrator.");
