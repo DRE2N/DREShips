@@ -1,6 +1,6 @@
 package de.fyreum.dreships.config;
 
-import de.erethon.commons.chat.MessageUtil;
+import de.erethon.bedrock.chat.MessageUtil;
 import de.fyreum.dreships.serialization.Serialization;
 import org.bukkit.configuration.file.FileConfiguration;
 import org.bukkit.configuration.file.YamlConfiguration;

@@ -9,6 +9,7 @@ import java.io.Serializable;
 public class SerializableLocation implements Serializable {
 
     private static final long serialVersionUID = -8820723990301699800L;
+
     private final String worldName;
     private final double x, y, z;
     private final float yaw, pitch;

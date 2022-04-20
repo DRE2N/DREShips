@@ -1,6 +1,6 @@
 package de.fyreum.dreships.sign;
 
-import de.erethon.commons.chat.MessageUtil;
+import de.erethon.bedrock.chat.MessageUtil;
 import de.fyreum.dreships.DREShips;
 import de.fyreum.dreships.config.ShipMessage;
 import de.fyreum.dreships.event.TravelSignCreateEvent;
@@ -9,7 +9,7 @@ import de.fyreum.dreships.persistentdata.ShipDataTypes;
 import de.fyreum.dreships.sign.cache.CacheSignException;
 import de.fyreum.dreships.sign.cache.PlayerCache;
 import de.fyreum.dreships.util.PriceCalculationUtil;
-import org.bukkit.ChatColor;
+import net.kyori.adventure.text.Component;
 import org.bukkit.Location;
 import org.bukkit.block.Block;
 import org.bukkit.block.Sign;
@@ -130,10 +130,10 @@ public class SignManager {
     }
 
     private void visualizeData(Sign sign, String name, String destName, int price) {
-        sign.setLine(0, ShipMessage.SIGN_LINE_ONE.getMessage());
-        sign.setLine(1, ShipMessage.SIGN_LINE_TWO.getMessage(name));
-        sign.setLine(2, ShipMessage.SIGN_LINE_THREE.getMessage(String.valueOf(price)));
-        sign.setLine(3, ShipMessage.SIGN_LINE_FOUR.getMessage(destName));
+        sign.line(0, ShipMessage.SIGN_LINE_ONE.message());
+        sign.line(1, ShipMessage.SIGN_LINE_TWO.message(name));
+        sign.line(2, ShipMessage.SIGN_LINE_THREE.message(String.valueOf(price)));
+        sign.line(3, ShipMessage.SIGN_LINE_FOUR.message(destName));
         sign.update(true);
     }
 
@@ -204,10 +204,10 @@ public class SignManager {
         if (sign == null) {
             return;
         }
-        sign.setLine(0, "");
-        sign.setLine(1, "");
-        sign.setLine(2, "");
-        sign.setLine(3, "");
+        sign.line(0, Component.empty());
+        sign.line(1, Component.empty());
+        sign.line(2, Component.empty());
+        sign.line(3, Component.empty());
         sign.update(true);
     }
 
@@ -232,10 +232,10 @@ public class SignManager {
         if (sign == null) {
             return;
         }
-        sign.setLine(0, ChatColor.translateAlternateColorCodes('&', "&4###############"));
-        sign.setLine(1, ChatColor.translateAlternateColorCodes('&', "&cDisabled"));
-        sign.setLine(2, ChatColor.translateAlternateColorCodes('&', "&cContact Admin"));
-        sign.setLine(3, ChatColor.translateAlternateColorCodes('&', "&4###############"));
+        sign.line(0, MessageUtil.parse("&4###############"));
+        sign.line(1, MessageUtil.parse("&cDisabled"));
+        sign.line(2, MessageUtil.parse("&cContact Admin"));
+        sign.line(3, MessageUtil.parse("&4###############"));
         sign.update(true);
     }
 
@@ -346,14 +346,14 @@ public class SignManager {
         if (sign != null) {
             this.setPricePersistentData(sign, price);
             this.setListedPrice(sign, price);
-            sign.setLine(2, ShipMessage.SIGN_LINE_THREE.getMessage(String.valueOf(price)));
+            sign.line(2, ShipMessage.SIGN_LINE_THREE.message(String.valueOf(price)));
             sign.update(true);
         }
         if (DREShips.isSign(travelSign.getDestination().getBlock())) {
             Sign destination = (Sign) travelSign.getDestination().getBlock().getState();
             this.setPricePersistentData(destination, price);
             this.setListedPrice(destination, price);
-            destination.setLine(2, ShipMessage.SIGN_LINE_THREE.getMessage(String.valueOf(price)));
+            destination.line(2, ShipMessage.SIGN_LINE_THREE.message(String.valueOf(price)));
             destination.update(true);
         }
     }
@@ -378,14 +378,14 @@ public class SignManager {
         if (sign != null) {
             this.setNamePersistentData(sign, name);
             this.setListedName(sign, name);
-            sign.setLine(1, ShipMessage.SIGN_LINE_TWO.getMessage(name));
+            sign.line(1, ShipMessage.SIGN_LINE_TWO.message(name));
             sign.update(true);
         }
         if (DREShips.isSign(travelSign.getDestination().getBlock())) {
             Sign destination = (Sign) travelSign.getDestination().getBlock().getState();
             this.setDestinationNamePersistentData(destination, name);
             this.setListedDestinationName(destination, name);
-            destination.setLine(3, ShipMessage.SIGN_LINE_FOUR.getMessage(name));
+            destination.line(3, ShipMessage.SIGN_LINE_FOUR.message(name));
             destination.update(true);
         }
     }

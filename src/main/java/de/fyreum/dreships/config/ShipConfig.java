@@ -1,10 +1,10 @@
 package de.fyreum.dreships.config;
 
-import de.erethon.commons.config.DREConfig;
+import de.erethon.bedrock.config.EConfig;
 
 import java.io.File;
 
-public class ShipConfig extends DREConfig  {
+public class ShipConfig extends EConfig  {
 
     public static final int CONFIG_VERSION = 1;
 
@@ -20,46 +20,8 @@ public class ShipConfig extends DREConfig  {
 
     public ShipConfig(File file) {
         super(file, CONFIG_VERSION);
-        if (initialize) {
-            initialize();
-        }
+        initialize();
         load();
-    }
-
-    public String getLanguage() {
-        return language;
-    }
-
-    public double getAirshipDistanceMultiplier() {
-        return airshipDistanceMultiplier;
-    }
-
-    public double getLandDistanceMultiplier() {
-        return landDistanceMultiplier;
-    }
-
-    public double getShipDistanceMultiplier() {
-        return shipDistanceMultiplier;
-    }
-
-    public double getStartPrice() {
-        return startPrice;
-    }
-
-    public double getTaxMultiplier() {
-        return taxMultiplier;
-    }
-
-    public long getWhitelistedTeleportationTime() {
-        return whitelistedTeleportationTime;
-    }
-
-    public int getCommandsPerHelpPage() {
-        return commandsPerHelpPage;
-    }
-
-    public int getSignsPerListPage() {
-        return signsPerListPage;
     }
 
     @Override
@@ -119,5 +81,41 @@ public class ShipConfig extends DREConfig  {
         whitelistedTeleportationTime = config.getLong("whitelistedTeleportationTime", whitelistedTeleportationTime);
         commandsPerHelpPage = config.getInt("commandsPerHelpPage") == 0 ? commandsPerHelpPage : config.getInt("commandsPerHelpPage");
         signsPerListPage = config.getInt("signsPerListPage") == 0 ? signsPerListPage : config.getInt("signsPerListPage");
+    }
+
+    public String getLanguage() {
+        return language;
+    }
+
+    public double getAirshipDistanceMultiplier() {
+        return airshipDistanceMultiplier;
+    }
+
+    public double getLandDistanceMultiplier() {
+        return landDistanceMultiplier;
+    }
+
+    public double getShipDistanceMultiplier() {
+        return shipDistanceMultiplier;
+    }
+
+    public double getStartPrice() {
+        return startPrice;
+    }
+
+    public double getTaxMultiplier() {
+        return taxMultiplier;
+    }
+
+    public long getWhitelistedTeleportationTime() {
+        return whitelistedTeleportationTime;
+    }
+
+    public int getCommandsPerHelpPage() {
+        return commandsPerHelpPage;
+    }
+
+    public int getSignsPerListPage() {
+        return signsPerListPage;
     }
 }

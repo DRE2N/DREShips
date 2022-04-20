@@ -1,16 +1,16 @@
 package de.fyreum.dreships.commands;
 
-import de.erethon.commons.chat.MessageUtil;
-import de.erethon.commons.command.DRECommand;
-import de.erethon.commons.misc.NumberUtil;
+import de.erethon.bedrock.chat.MessageUtil;
+import de.erethon.bedrock.command.ECommand;
+import de.erethon.bedrock.misc.NumberUtil;
 import de.fyreum.dreships.DREShips;
 import de.fyreum.dreships.sign.ListedTravelSign;
 import de.fyreum.dreships.sign.SignManager;
+import net.kyori.adventure.text.Component;
+import net.kyori.adventure.text.JoinConfiguration;
+import net.kyori.adventure.text.event.ClickEvent;
+import net.kyori.adventure.text.event.HoverEvent;
 import net.md_5.bungee.api.ChatColor;
-import net.md_5.bungee.api.chat.ClickEvent;
-import net.md_5.bungee.api.chat.HoverEvent;
-import net.md_5.bungee.api.chat.TextComponent;
-import net.md_5.bungee.api.chat.hover.content.Text;
 import org.bukkit.Location;
 import org.bukkit.command.CommandSender;
 import org.bukkit.entity.Player;
@@ -22,7 +22,7 @@ import java.util.Set;
 import java.util.UUID;
 import java.util.stream.Collectors;
 
-public class ListCommand extends DRECommand {
+public class ListCommand extends ECommand {
 
     private final DREShips plugin = DREShips.getInstance();
 
@@ -71,19 +71,19 @@ public class ListCommand extends DRECommand {
         MessageUtil.sendCenteredMessage(player, "&8&l[ &9" + min + "-" + max + " &8/&9 " + send + " &8|&9 " + page + " &8&l]");
 
         for (ListedTravelSign travelSign : toSend) {
-            MessageUtil.sendMessage(player,
+            Component component = Component.join(JoinConfiguration.separator(Component.newline()),
                     buildMessage(travelSign.getName(), travelSign.getLocation()),
-                    new TextComponent(ChatColor.GRAY + " -> "),
+                    MessageUtil.parse("<gray> -> "),
                     buildMessage(travelSign.getDestinationName(), travelSign.getDestination()),
-                    new TextComponent(ChatColor.DARK_RED + " - " + ChatColor.GOLD + (plugin.getEconomy() != null ? plugin.getEconomy().format(travelSign.getPrice()) : travelSign.getPrice() + " H")));
+                    MessageUtil.parse("<dark_red> - <gold>" + (plugin.getEconomy() != null ? plugin.getEconomy().format(travelSign.getPrice()) : travelSign.getPrice() + " H")));
+            player.sendMessage(component);
         }
     }
 
-    private TextComponent buildMessage(String name, Location location) {
-        TextComponent loc1 = new TextComponent(ChatColor.AQUA + name);
-        loc1.setHoverEvent(new HoverEvent(HoverEvent.Action.SHOW_TEXT, new Text(ChatColor.GRAY + SignManager.simplify(location))));
-        loc1.setClickEvent(new ClickEvent(ClickEvent.Action.RUN_COMMAND, commandString(location)));
-        return loc1;
+    private Component buildMessage(String name, Location location) {
+        return MessageUtil.parse("<aqua>" + name)
+                .hoverEvent(HoverEvent.showText(MessageUtil.parse("<aqua>" + SignManager.simplify(location))))
+                .clickEvent(ClickEvent.runCommand(commandString(location)));
     }
 
     private String commandString(Location loc) {

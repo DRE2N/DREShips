@@ -1,8 +1,8 @@
 package de.fyreum.dreships.config;
 
-import de.erethon.commons.chat.MessageUtil;
-import de.erethon.commons.config.Message;
-import de.erethon.commons.config.MessageHandler;
+import de.erethon.bedrock.chat.MessageUtil;
+import de.erethon.bedrock.config.Message;
+import de.erethon.bedrock.config.MessageHandler;
 import de.fyreum.dreships.DREShips;
 import org.bukkit.command.CommandSender;
 import org.bukkit.entity.Player;
@@ -53,22 +53,6 @@ public enum ShipMessage implements Message {
 
     ShipMessage(String path) {
         this.path = path;
-    }
-
-    @Override
-    public String getMessage() {
-        if (this.getMessageHandler().getMessage(this) == null) {
-            return "Invalid Message at " + getPath();
-        }
-        return this.getMessageHandler().getMessage(this);
-    }
-
-    @Override
-    public String getMessage(String... args) {
-        if (this.getMessageHandler().getMessage(this, args) == null) {
-            return "Invalid Message at " + getPath();
-        }
-        return this.getMessageHandler().getMessage(this, args);
     }
 
     public void sendMessage(CommandSender sender, String... args) {

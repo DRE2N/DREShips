@@ -1,11 +1,11 @@
 package de.fyreum.dreships.commands;
 
-import de.erethon.commons.command.DRECommand;
+import de.erethon.bedrock.command.ECommand;
 import de.fyreum.dreships.DREShips;
 import de.fyreum.dreships.config.ShipMessage;
 import org.bukkit.command.CommandSender;
 
-public class ReloadCommand extends DRECommand {
+public class ReloadCommand extends ECommand {
 
     DREShips plugin = DREShips.getInstance();
 

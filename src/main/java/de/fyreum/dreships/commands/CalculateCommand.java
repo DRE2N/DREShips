@@ -1,7 +1,7 @@
 package de.fyreum.dreships.commands;
 
-import de.erethon.commons.command.DRECommand;
-import de.erethon.commons.misc.NumberUtil;
+import de.erethon.bedrock.command.ECommand;
+import de.erethon.bedrock.misc.NumberUtil;
 import de.fyreum.dreships.DREShips;
 import de.fyreum.dreships.config.ShipMessage;
 import de.fyreum.dreships.sign.cache.PlayerCache;
@@ -10,7 +10,7 @@ import net.milkbowl.vault.economy.Economy;
 import org.bukkit.command.CommandSender;
 import org.bukkit.entity.Player;
 
-public class CalculateCommand extends DRECommand {
+public class CalculateCommand extends ECommand {
 
     DREShips plugin = DREShips.getInstance();
 

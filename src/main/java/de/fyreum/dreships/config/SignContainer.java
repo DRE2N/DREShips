@@ -15,7 +15,7 @@ import java.util.stream.Stream;
 
 /**
  * This class is for visual use (/ds list) only.
- * Changing its values won't effect the actual signs.
+ * Changing its values won't affect the actual signs.
  * @see de.fyreum.dreships.commands.ListCommand
  */
 public class SignContainer implements Iterable<ListedTravelSign>, Serializable {

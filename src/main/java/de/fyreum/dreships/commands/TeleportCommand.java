@@ -1,7 +1,7 @@
 package de.fyreum.dreships.commands;
 
-import de.erethon.commons.chat.MessageUtil;
-import de.erethon.commons.command.DRECommand;
+import de.erethon.bedrock.chat.MessageUtil;
+import de.erethon.bedrock.command.ECommand;
 import de.fyreum.dreships.DREShips;
 import de.fyreum.dreships.config.ShipMessage;
 import de.fyreum.dreships.sign.SignManager;
@@ -15,7 +15,7 @@ import org.bukkit.block.data.type.WallSign;
 import org.bukkit.command.CommandSender;
 import org.bukkit.entity.Player;
 
-public class TeleportCommand extends DRECommand {
+public class TeleportCommand extends ECommand {
 
     private final DREShips plugin = DREShips.getInstance();
     private final TeleportationUtil teleportationUtil = plugin.getTeleportationUtil();

@@ -36,7 +36,8 @@ public class LocationDataType implements PersistentDataType<byte[], Location> {
                 String.valueOf(location.getY()),
                 String.valueOf(location.getZ()),
                 String.valueOf(location.getYaw()),
-                String.valueOf(location.getPitch())});
+                String.valueOf(location.getPitch())
+        });
     }
 
     @NotNull
@@ -49,6 +50,7 @@ public class LocationDataType implements PersistentDataType<byte[], Location> {
                 Double.parseDouble(stringArray[2]),
                 Double.parseDouble(stringArray[3]),
                 Float.parseFloat(stringArray[4]),
-                Float.parseFloat(stringArray[5]));
+                Float.parseFloat(stringArray[5])
+        );
     }
 }

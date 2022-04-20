@@ -70,7 +70,7 @@ public class Serialization {
     }
 
     @Nullable
-    public static Object deserialize(@NotNull byte[] bytes) {
+    public static Object deserialize(byte[] bytes) {
         try {
             ByteArrayInputStream byteArrayInputStream = new ByteArrayInputStream(bytes);
             ObjectInput objectInputStream = new ObjectInputStream(byteArrayInputStream);

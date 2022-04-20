@@ -1,16 +1,15 @@
 package de.fyreum.dreships.util;
 
-import de.erethon.commons.chat.MessageUtil;
+import de.erethon.bedrock.chat.MessageUtil;
 import de.erethon.factionsxl.faction.Faction;
 import de.fyreum.dreships.DREShips;
 import de.fyreum.dreships.config.ShipMessage;
 import de.fyreum.dreships.event.TravelSignTeleportationEvent;
 import de.fyreum.dreships.event.TravelSignTeleportationPreparationEvent;
 import de.fyreum.dreships.sign.TravelSign;
-import net.md_5.bungee.api.chat.ClickEvent;
-import net.md_5.bungee.api.chat.HoverEvent;
-import net.md_5.bungee.api.chat.TextComponent;
-import net.md_5.bungee.api.chat.hover.content.Text;
+import net.kyori.adventure.text.Component;
+import net.kyori.adventure.text.event.ClickEvent;
+import net.kyori.adventure.text.event.HoverEvent;
 import net.milkbowl.vault.economy.Economy;
 import org.bukkit.Bukkit;
 import org.bukkit.ChatColor;
@@ -123,19 +122,13 @@ public class TeleportationUtil {
     }
 
     private String multipliedCooldownString(int multiply) {
-        StringBuilder stringBuilder = new StringBuilder();
-        for (int i = 0; i < multiply; i++) {
-            stringBuilder.append("█");
-        }
-        return stringBuilder.toString();
+        return "█".repeat(Math.max(0, multiply));
     }
 
-    private TextComponent teleportMessage(@NotNull Location loc) {
-        TextComponent component = new TextComponent();
-        component.setText(ShipMessage.CMD_TP_SUGGESTION.getMessage());
-        component.setHoverEvent(new HoverEvent(HoverEvent.Action.SHOW_TEXT, new Text(ShipMessage.CMD_TP_HOVER_TEXT.getMessage())));
-        component.setClickEvent(new ClickEvent(ClickEvent.Action.RUN_COMMAND, commandString(loc))); // hate Bukkit for not adding a better way of doing this -.-
-        return component;
+    private Component teleportMessage(@NotNull Location loc) {
+        return ShipMessage.CMD_TP_SUGGESTION.message()
+                .hoverEvent(HoverEvent.showText(ShipMessage.CMD_TP_HOVER_TEXT.message()))
+                .clickEvent(ClickEvent.runCommand(commandString(loc)));
     }
 
     private String commandString(@NotNull Location loc) {
@@ -186,7 +179,7 @@ public class TeleportationUtil {
                 public void run() {
                     if (player.getLocation().getBlockX() == location.getBlockX() && player.getLocation().getBlockY() ==
                             location.getBlockY() && player.getLocation().getBlockZ() == location.getBlockZ()) {
-                        player.sendActionBar(ChatColor.GREEN + multipliedCooldownString(repeats) + ChatColor.DARK_RED + multipliedCooldownString(seconds - repeats));
+                        MessageUtil.sendActionBarMessage(player, "<green>" + multipliedCooldownString(repeats) + "<dark_red>" + multipliedCooldownString(seconds - repeats));
                         if (repeats == seconds) {
                             TravelSignTeleportationEvent teleportationEvent = new TravelSignTeleportationEvent(player, player.getLocation(), destination);
 

@@ -21,7 +21,7 @@ cmd:
   enable:
     success: "&aSchild wurde aktiviert"
   info:
-    travelSign: "&8----------&l[ &9Verbindung&8 &l]&r&8----------\n&8> &3von&8: &6&v1 &7(&v2)\n&8> &3nach&8: &6&v3 &7(&v4)\n&8> &3für&8: &6&v5 Heronen\n&8---------&l[ &9Einstellungen&8 &l]&r&8---------\n&8> &3deaktiviert: &7&v6\n&8> &3Weltenunabhängig: &7&v7\n&8> &3Teleport-Dauer: &7&v8\n&8--------------------------------"
+    travelSign: "&8----------&l[ &9Verbindung&8 &l]&r&8----------\n&8> &3von&8: &6&v1 &7(&v2)\n&8> &3nach&8: &6&v3 &7(&v4)\n&8> &3für&8: &7&v5 Heronen\n&8---------&l[ &9Einstellungen&8 &l]&r&8---------\n&8> &3deaktiviert: &7&v6\n&8> &3Weltenunabhängig: &7&v7\n&8> &3Teleport-Dauer: &7&v8\n&8-----------------------------------"
   reload:
     success: "&aPlugin wurde neugeladen"
   removeMessage:

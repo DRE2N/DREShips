@@ -1,6 +1,6 @@
 package de.fyreum.dreships.commands;
 
-import de.erethon.commons.command.DRECommand;
+import de.erethon.bedrock.command.ECommand;
 import de.fyreum.dreships.DREShips;
 import de.fyreum.dreships.config.ShipMessage;
 import de.fyreum.dreships.sign.TravelSign;
@@ -10,7 +10,7 @@ import org.bukkit.block.Sign;
 import org.bukkit.command.CommandSender;
 import org.bukkit.entity.Player;
 
-public class SaveCommand extends DRECommand {
+public class SaveCommand extends ECommand {
 
     DREShips plugin = DREShips.getInstance();
 

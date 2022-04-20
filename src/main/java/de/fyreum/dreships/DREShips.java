@@ -1,9 +1,9 @@
 package de.fyreum.dreships;
 
-import de.erethon.commons.chat.MessageUtil;
-import de.erethon.commons.compatibility.Internals;
-import de.erethon.commons.javaplugin.DREPlugin;
-import de.erethon.commons.javaplugin.DREPluginSettings;
+import de.erethon.bedrock.chat.MessageUtil;
+import de.erethon.bedrock.compatibility.Internals;
+import de.erethon.bedrock.plugin.EPlugin;
+import de.erethon.bedrock.plugin.EPluginSettings;
 import de.erethon.factionsxl.FactionsXL;
 import de.fyreum.dreships.commands.ShipCommandCache;
 import de.fyreum.dreships.config.ShipConfig;
@@ -31,9 +31,10 @@ import static org.bukkit.block.BlockFace.NORTH;
 import static org.bukkit.block.BlockFace.SOUTH;
 import static org.bukkit.block.BlockFace.WEST;
 
-public final class DREShips extends DREPlugin {
+public final class DREShips extends EPlugin {
 
     private static DREShips plugin;
+
     private Economy economy = null;
     private ShipConfig shipConfig;
     private PlayerCache playerCache;
@@ -45,10 +46,9 @@ public final class DREShips extends DREPlugin {
     private SignConfig signConfig;
 
     public DREShips() {
-        settings = DREPluginSettings.builder()
-                .paper(true)
+        settings = EPluginSettings.builder()
                 .economy(true)
-                .internals(Internals.v1_16_R1)
+                .internals(Internals.v1_18_R2)
                 .build();
     }
 
@@ -142,6 +142,8 @@ public final class DREShips extends DREPlugin {
     public FactionsXL getFactionsXL() {
         return factionsXL;
     }
+
+    /* statics */
 
     public static DREShips getInstance() {
         return plugin;

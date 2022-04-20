@@ -1,6 +1,6 @@
 package de.fyreum.dreships.commands;
 
-import de.erethon.commons.misc.NumberUtil;
+import de.erethon.bedrock.misc.NumberUtil;
 import de.fyreum.dreships.DREShips;
 import de.fyreum.dreships.config.ShipMessage;
 import de.fyreum.dreships.sign.TravelSign;

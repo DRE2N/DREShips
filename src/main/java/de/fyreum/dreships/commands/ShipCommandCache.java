@@ -1,8 +1,8 @@
 package de.fyreum.dreships.commands;
 
-import de.erethon.commons.command.DRECommand;
-import de.erethon.commons.command.DRECommandCache;
-import de.erethon.commons.javaplugin.DREPlugin;
+import de.erethon.bedrock.command.ECommand;
+import de.erethon.bedrock.command.ECommandCache;
+import de.erethon.bedrock.plugin.EPlugin;
 import de.fyreum.dreships.util.PriceCalculationUtil;
 import org.bukkit.command.Command;
 import org.bukkit.command.CommandSender;
@@ -13,10 +13,10 @@ import org.jetbrains.annotations.NotNull;
 import java.util.ArrayList;
 import java.util.List;
 
-public class ShipCommandCache extends DRECommandCache implements TabCompleter {
+public class ShipCommandCache extends ECommandCache implements TabCompleter {
 
     public static final String LABEL = "dreships";
-    DREPlugin plugin;
+    EPlugin plugin;
 
     public InfoCommand infoCommand = new InfoCommand();
     public CreateCommand createCommand = new CreateCommand();
@@ -36,7 +36,7 @@ public class ShipCommandCache extends DRECommandCache implements TabCompleter {
     public RenameCommand renameCommand = new RenameCommand();
     public SetPriceCommand setPriceCommand = new SetPriceCommand();
 
-    public ShipCommandCache(DREPlugin plugin) {
+    public ShipCommandCache(EPlugin plugin) {
         super(LABEL, plugin);
         this.plugin = plugin;
 
@@ -68,7 +68,7 @@ public class ShipCommandCache extends DRECommandCache implements TabCompleter {
     @Override
     public List<String> onTabComplete(@NotNull CommandSender sender, @NotNull Command command, @NotNull String alias, String[] args) {
         List<String> cmds = new ArrayList<>();
-        for (DRECommand cmd : getCommands()) {
+        for (ECommand cmd : getCommands()) {
             if (cmd.getPermission() != null && !cmd.getPermission().isEmpty() && sender.hasPermission(cmd.getPermission())) {
                 cmds.add(cmd.getCommand());
             }

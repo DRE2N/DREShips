@@ -1,6 +1,6 @@
 package de.fyreum.dreships.commands;
 
-import de.erethon.commons.command.DRECommand;
+import de.erethon.bedrock.command.ECommand;
 import de.fyreum.dreships.DREShips;
 import de.fyreum.dreships.config.ShipMessage;
 import de.fyreum.dreships.sign.SignManager;
@@ -8,7 +8,7 @@ import de.fyreum.dreships.sign.cache.CacheSignException;
 import org.bukkit.command.CommandSender;
 import org.bukkit.entity.Player;
 
-public class CreateCommand extends DRECommand {
+public class CreateCommand extends ECommand {
 
     DREShips plugin = DREShips.getInstance();
     SignManager signManager = plugin.getSignManager();
